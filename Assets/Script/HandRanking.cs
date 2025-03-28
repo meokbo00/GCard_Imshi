@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using TMPro;
 
@@ -14,11 +15,13 @@ public class HandRanking : MonoBehaviour
     public TextMeshProUGUI sumPointText; // 총 포인트 표시용 텍스트
     public float BlueChip = 0f; // 블루 칩 값
     public float RedChip = 0f; // 레드 칩 값
+    private float sumPoint = 0f; // 누적 포인트 값
     private bool isHandPlaying = false; // HandPlay 중인지 여부를 체크하는 플래그
 
     void Start()
     {
         deckManager = FindObjectOfType<DeckManager>();
+        sumPointText.text = "0"; // 초기값 설정
     }
 
     void Update()
@@ -38,7 +41,7 @@ public class HandRanking : MonoBehaviour
             bool cardsChanged = HasSelectedCardsChanged();
             if (cardsChanged)
             {
-                DetermineHandRank();
+                DetermineHandRank(false); // sumPoint를 초기화하지 않도록 false 전달
 
                 // 이전 선택 카드 목록 업데이트
                 previousSelectedCards.Clear();
@@ -61,14 +64,13 @@ public class HandRanking : MonoBehaviour
         return false;
     }
 
-    private void DetermineHandRank()
+    private void DetermineHandRank(bool resetSumPoint = true)
     {
         string handRank = "없음";
 
         if (selectedCards.Count == 0)
         {
-            BlueChip = 0f;
-            RedChip = 0f;
+            ResetChips();
         }
         else
         {
@@ -140,11 +142,6 @@ public class HandRanking : MonoBehaviour
         {
             redChipText.text = RedChip.ToString();
         }
-        if (sumPointText != null)
-        {
-            float totalPoint = BlueChip * RedChip;
-            sumPointText.text = totalPoint.ToString();
-        }
     }
 
     private bool IsStraightFlush(List<Card> cards)
@@ -197,32 +194,44 @@ public class HandRanking : MonoBehaviour
     private bool IsStraight(List<Card> cards)
     {
         if (cards.Count < 5) return false;
-        List<int> ranks = new List<int>();
+
+        // 카드를 값에 따라 정렬 (2,3,4,5,6,7,8,9,10,J,Q,K,A)
+        List<int> values = new List<int>();
         foreach (Card card in cards)
         {
-            ranks.Add((int)card.rank);
+            if (card.rank == Card.Rank.Ace)
+            {
+                values.Add(1);  // A를 1로도 사용
+                values.Add(14); // A를 14로도 사용
+            }
+            else
+            {
+                values.Add((int)card.rank);
+            }
         }
-        ranks.Sort();
+        values.Sort();
 
-        // A-5 스트레이트 특수 처리
-        if (ranks.Contains((int)Card.Rank.Ace))
-        {
-            ranks.Add(1); // Ace를 1로도 사용할 수 있음
-        }
+        // 중복 제거
+        values = values.Distinct().ToList();
 
-        for (int i = 0; i <= ranks.Count - 5; i++)
+        // 연속된 5장 체크
+        for (int i = 0; i <= values.Count - 5; i++)
         {
-            bool isStraight = true;
+            bool isConsecutive = true;
             for (int j = 0; j < 4; j++)
             {
-                if (ranks[i + j + 1] - ranks[i + j] != 1)
+                if (values[i + j + 1] - values[i + j] != 1)
                 {
-                    isStraight = false;
+                    isConsecutive = false;
                     break;
                 }
             }
-            if (isStraight) return true;
+            if (isConsecutive)
+            {
+                return true;
+            }
         }
+
         return false;
     }
 
@@ -308,10 +317,30 @@ public class HandRanking : MonoBehaviour
         {
             blueChipText.text = BlueChip.ToString();
         }
+    }
+
+    public void UpdateSumPoint()
+    {
+        float currentPoints = BlueChip * RedChip;
+        sumPoint += currentPoints;  // 기존 sumPoint에 현재 점수를 더함
         if (sumPointText != null)
         {
-            float totalPoint = BlueChip * RedChip;
-            sumPointText.text = totalPoint.ToString();
+            sumPointText.text = sumPoint.ToString();
+        }
+    }
+
+    // BlueChip과 RedChip을 리셋하는 메서드 추가
+    public void ResetChips()
+    {
+        BlueChip = 0f;
+        RedChip = 0f;
+        if (blueChipText != null)
+        {
+            blueChipText.text = "0";
+        }
+        if (redChipText != null)
+        {
+            redChipText.text = "0";
         }
     }
 }

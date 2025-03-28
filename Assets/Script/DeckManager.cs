@@ -6,7 +6,6 @@ using TMPro;
 public class DeckManager : MonoBehaviour
 {
     public GameObject cardPrefab;
-    public GameObject pointTextPrefab; // 포인트 텍스트 프리팹
     public Canvas canvas; // UI 캔버스 참조 추가
     public HandRanking handRanking; // HandRanking 참조 추가
     private List<Card> deck = new List<Card>();
@@ -15,7 +14,6 @@ public class DeckManager : MonoBehaviour
     private Vector3 cardScale = new Vector3(2f, 2f, 2f); // 카드 스케일 설정
     private List<Card> selectedCards = new List<Card>();
     private const int MAX_SELECTED_CARDS = 5;
-    private List<GameObject> pointTexts = new List<GameObject>(); // 생성된 포인트 텍스트들을 저장할 리스트
 
     void Start()
     {
@@ -317,11 +315,26 @@ public class DeckManager : MonoBehaviour
                     pointText.text = "+" + point.ToString();
                     pointText.gameObject.SetActive(true);
 
+                    // 포인트 값만큼 블루칩 증가
+                    if (handRanking != null)
+                    {
+                        handRanking.AddBlueChipValue(point);
+                    }
+
                     // 0.2초 대기 후 텍스트 비활성화
                     yield return new WaitForSeconds(0.2f);
                     pointText.gameObject.SetActive(false);
                 }
             }
+        }
+
+        // 모든 포인트 텍스트 표시가 끝난 후 오른쪽으로 이동 및 새 카드 생성
+        yield return StartCoroutine(MoveCardsRightCoroutine());
+
+        // 모든 카드가 버려지고 새 카드가 생성된 후 sumPoint 업데이트
+        if (handRanking != null)
+        {
+            handRanking.UpdateSumPoint();
         }
     }
 
@@ -632,6 +645,12 @@ public class DeckManager : MonoBehaviour
                 Vector3 targetPos = new Vector3(maxX, card.transform.position.y, 0f);
                 cardPositions[card] = (card.transform.position, targetPos);
             }
+        }
+
+        // 카드가 오른쪽으로 이동하기 직전에 sumPoint 업데이트
+        if (handRanking != null)
+        {
+            handRanking.UpdateSumPoint();
         }
 
         // 모든 카드를 동시에 이동

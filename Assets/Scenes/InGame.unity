@@ -167,9 +167,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cardPrefab: {fileID: 2611013713401258576, guid: 01ce4aad69817f04785d691c3ae5d29e, type: 3}
-  pointTextPrefab: {fileID: 4233318076110879789, guid: 4bdb25a98ccf37f4580d04befc1562fb, type: 3}
   canvas: {fileID: 1276504261}
-  handRanking: {fileID: 0}
+  handRanking: {fileID: 448909984}
 --- !u!1 &143103655
 GameObject:
   m_ObjectHideFlags: 0
@@ -296,7 +295,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uC2A4\uD2B8\uB808\uC774\uD2B8"
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 9951a4ed3e5b6374a82339ccaaf684bd, type: 2}
   m_sharedMaterial: {fileID: 1062289947389446286, guid: 9951a4ed3e5b6374a82339ccaaf684bd, type: 2}
@@ -540,7 +539,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 300
+  m_text: 0
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 9951a4ed3e5b6374a82339ccaaf684bd, type: 2}
   m_sharedMaterial: {fileID: 1062289947389446286, guid: 9951a4ed3e5b6374a82339ccaaf684bd, type: 2}
@@ -713,7 +712,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 300
+  m_text: 0
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 9951a4ed3e5b6374a82339ccaaf684bd, type: 2}
   m_sharedMaterial: {fileID: 1062289947389446286, guid: 9951a4ed3e5b6374a82339ccaaf684bd, type: 2}
@@ -847,7 +846,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 25,000,000
+  m_text: 0
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 9951a4ed3e5b6374a82339ccaaf684bd, type: 2}
   m_sharedMaterial: {fileID: 1062289947389446286, guid: 9951a4ed3e5b6374a82339ccaaf684bd, type: 2}
