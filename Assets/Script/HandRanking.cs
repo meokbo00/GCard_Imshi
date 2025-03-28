@@ -7,12 +7,14 @@ public class HandRanking : MonoBehaviour
 {
     private DeckManager deckManager;
     private List<Card> selectedCards = new List<Card>();
+    private List<Card> previousSelectedCards = new List<Card>(); // 이전 프레임의 선택된 카드들
     public TextMeshProUGUI handRankText; // UI 텍스트 연결용 변수
-    public TextMeshProUGUI blueChipText; // 블루 칩 값 표시용 텍스트
+    public TextMeshProUGUI blueChipText; // BlueChip 점수를 표시할 UI 텍스트
     public TextMeshProUGUI redChipText; // 레드 칩 값 표시용 텍스트
     public TextMeshProUGUI sumPointText; // 총 포인트 표시용 텍스트
     public float BlueChip = 0f; // 블루 칩 값
     public float RedChip = 0f; // 레드 칩 값
+    private bool isHandPlaying = false; // HandPlay 중인지 여부를 체크하는 플래그
 
     void Start()
     {
@@ -21,22 +23,115 @@ public class HandRanking : MonoBehaviour
 
     void Update()
     {
-        selectedCards.Clear();
-        foreach (Card card in deckManager.GetHand())
+        if (!isHandPlaying) // HandPlay 중이 아닐 때만 족보 체크
         {
-            if (card != null && card.isSelected)
+            selectedCards.Clear();
+            foreach (Card card in deckManager.GetHand())
             {
-                selectedCards.Add(card);
+                if (card != null && card.isSelected)
+                {
+                    selectedCards.Add(card);
+                }
+            }
+
+            // 선택된 카드가 변경되었는지 확인
+            bool cardsChanged = HasSelectedCardsChanged();
+            if (cardsChanged)
+            {
+                DetermineHandRank();
+
+                // 이전 선택 카드 목록 업데이트
+                previousSelectedCards.Clear();
+                previousSelectedCards.AddRange(selectedCards);
+            }
+        }
+    }
+
+    private bool HasSelectedCardsChanged()
+    {
+        if (selectedCards.Count != previousSelectedCards.Count)
+            return true;
+
+        for (int i = 0; i < selectedCards.Count; i++)
+        {
+            if (!previousSelectedCards.Contains(selectedCards[i]))
+                return true;
+        }
+
+        return false;
+    }
+
+    private void DetermineHandRank()
+    {
+        string handRank = "없음";
+
+        if (selectedCards.Count == 0)
+        {
+            BlueChip = 0f;
+            RedChip = 0f;
+        }
+        else
+        {
+            if (IsStraightFlush(selectedCards))
+            {
+                handRank = "스트레이트 플러시";
+                BlueChip = 100f;
+                RedChip = 8f;
+            }
+            else if (IsFourOfAKind(selectedCards))
+            {
+                handRank = "포카드";
+                BlueChip = 60f;
+                RedChip = 7f;
+            }
+            else if (IsFullHouse(selectedCards))
+            {
+                handRank = "풀하우스";
+                BlueChip = 40f;
+                RedChip = 4f;
+            }
+            else if (IsFlush(selectedCards))
+            {
+                handRank = "플러시";
+                BlueChip = 35f;
+                RedChip = 4f;
+            }
+            else if (IsStraight(selectedCards))
+            {
+                handRank = "스트레이트";
+                BlueChip = 30f;
+                RedChip = 4f;
+            }
+            else if (IsThreeOfAKind(selectedCards))
+            {
+                handRank = "트리플";
+                BlueChip = 30f;
+                RedChip = 3f;
+            }
+            else if (IsTwoPair(selectedCards))
+            {
+                handRank = "투페어";
+                BlueChip = 20f;
+                RedChip = 2f;
+            }
+            else if (IsOnePair(selectedCards))
+            {
+                handRank = "원 페어";
+                BlueChip = 10f;
+                RedChip = 2f;
+            }
+            else
+            {
+                handRank = "하이카드";
+                BlueChip = 5f;
+                RedChip = 1f;
             }
         }
 
-        string handRank = DetermineHandRank();
         if (handRankText != null)
         {
             handRankText.text = handRank;
         }
-
-        // 칩 값 업데이트
         if (blueChipText != null)
         {
             blueChipText.text = BlueChip.ToString();
@@ -49,74 +144,6 @@ public class HandRanking : MonoBehaviour
         {
             float totalPoint = BlueChip * RedChip;
             sumPointText.text = totalPoint.ToString();
-        }
-    }
-
-    private string DetermineHandRank()
-    {
-        if (selectedCards.Count == 0)
-        {
-            BlueChip = 0f;
-            RedChip = 0f;
-            return "없음";
-        }
-        else
-        {
-            // 모든 족보 확인 (높은 순서대로)
-            if (IsStraightFlush(selectedCards))
-            {
-                BlueChip = 100f;
-                RedChip = 8f;
-                return "스트레이트 플러시";
-            }
-            else if (IsFourOfAKind(selectedCards))
-            {
-                BlueChip = 60f;
-                RedChip = 7f;
-                return "포카드";
-            }
-            else if (IsFullHouse(selectedCards))
-            {
-                BlueChip = 40f;
-                RedChip = 4f;
-                return "풀하우스";
-            }
-            else if (IsFlush(selectedCards))
-            {
-                BlueChip = 35f;
-                RedChip = 4f;
-                return "플러시";
-            }
-            else if (IsStraight(selectedCards))
-            {
-                BlueChip = 30f;
-                RedChip = 4f;
-                return "스트레이트";
-            }
-            else if (IsThreeOfAKind(selectedCards))
-            {
-                BlueChip = 30f;
-                RedChip = 3f;
-                return "트리플";
-            }
-            else if (IsTwoPair(selectedCards))
-            {
-                BlueChip = 20f;
-                RedChip = 2f;
-                return "투페어";
-            }
-            else if (IsOnePair(selectedCards))
-            {
-                BlueChip = 10f;
-                RedChip = 2f;
-                return "원 페어";
-            }
-            else
-            {
-                BlueChip = 5f;
-                RedChip = 1f;
-                return "하이카드";
-            }
         }
     }
 
@@ -261,5 +288,30 @@ public class HandRanking : MonoBehaviour
             }
         }
         return pairCount == 1;
+    }
+
+    public void StartHandPlay()
+    {
+        isHandPlaying = true;
+    }
+
+    public void EndHandPlay()
+    {
+        isHandPlaying = false;
+    }
+
+    public void AddBlueChipValue(float value)
+    {
+        BlueChip += value;
+        // UI 업데이트
+        if (blueChipText != null)
+        {
+            blueChipText.text = BlueChip.ToString();
+        }
+        if (sumPointText != null)
+        {
+            float totalPoint = BlueChip * RedChip;
+            sumPointText.text = totalPoint.ToString();
+        }
     }
 }

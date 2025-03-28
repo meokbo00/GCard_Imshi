@@ -1,16 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class DeckManager : MonoBehaviour
 {
     public GameObject cardPrefab;
+    public GameObject pointTextPrefab; // 포인트 텍스트 프리팹
+    public Canvas canvas; // UI 캔버스 참조 추가
+    public HandRanking handRanking; // HandRanking 참조 추가
     private List<Card> deck = new List<Card>();
     private List<Card> discardPile = new List<Card>();
     private List<Card> hand = new List<Card>();
     private Vector3 cardScale = new Vector3(2f, 2f, 2f); // 카드 스케일 설정
     private List<Card> selectedCards = new List<Card>();
     private const int MAX_SELECTED_CARDS = 5;
+    private List<GameObject> pointTexts = new List<GameObject>(); // 생성된 포인트 텍스트들을 저장할 리스트
 
     void Start()
     {
@@ -255,15 +260,67 @@ public class DeckManager : MonoBehaviour
         // 선택된 카드가 없으면 아무 동작도 하지 않음
         if (selectedCards.Count == 0) return;
 
-        // 선택된 카드들을 위로 이동
-        foreach (Card card in selectedCards)
+        // 선택된 카드들을 정렬 (x 좌표 기준으로)
+        List<Card> sortedCards = new List<Card>(selectedCards);
+        sortedCards.Sort((a, b) => a.transform.position.x.CompareTo(b.transform.position.x));
+
+        StartCoroutine(HandPlayCoroutine(sortedCards));
+    }
+
+    private IEnumerator HandPlayCoroutine(List<Card> sortedCards)
+    {
+        // 먼저 모든 카드를 위로 이동
+        List<Coroutine> moveCoroutines = new List<Coroutine>();
+        foreach (Card card in sortedCards)
         {
             if (card != null)
             {
                 Vector3 currentPos = card.transform.position;
                 Vector3 targetPos = new Vector3(currentPos.x, currentPos.y + 2.5f, currentPos.z);
-                StartCoroutine(MoveCardToPosition(card, targetPos));
-                card.originalPosition = targetPos; // originalPosition도 업데이트
+                moveCoroutines.Add(StartCoroutine(MoveCardToPosition(card, targetPos)));
+                card.originalPosition = targetPos;
+            }
+        }
+
+        // 모든 카드의 이동이 완료될 때까지 대기
+        foreach (Coroutine moveCoroutine in moveCoroutines)
+        {
+            yield return moveCoroutine;
+        }
+
+        // 0.35초 대기
+        yield return new WaitForSeconds(0.35f);
+
+        // 왼쪽부터 순서대로 포인트 텍스트 표시
+        foreach (Card card in sortedCards)
+        {
+            if (card != null)
+            {
+                TextMeshProUGUI pointText = card.GetComponentInChildren<TextMeshProUGUI>(true);
+                if (pointText != null)
+                {
+                    // 카드 값에 따른 포인트 계산
+                    int point = 0;
+                    if (card.rank == Card.Rank.Ace)
+                    {
+                        point = 11;
+                    }
+                    else if (card.rank == Card.Rank.King || card.rank == Card.Rank.Queen || card.rank == Card.Rank.Jack)
+                    {
+                        point = 10;
+                    }
+                    else
+                    {
+                        point = (int)card.rank;
+                    }
+
+                    pointText.text = "+" + point.ToString();
+                    pointText.gameObject.SetActive(true);
+
+                    // 0.2초 대기 후 텍스트 비활성화
+                    yield return new WaitForSeconds(0.2f);
+                    pointText.gameObject.SetActive(false);
+                }
             }
         }
     }

@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 
 public class Card : MonoBehaviour
 {
@@ -68,16 +69,23 @@ public class Card : MonoBehaviour
     private int lastMoveDirection = 0; // 마지막 이동 방향 (1: 오른쪽, -1: 왼쪽)
     private Vector3 lastMousePosition; // 이전 프레임의 마우스 위치
 
+    private TextMeshProUGUI pointText; // 포인트 텍스트 컴포넌트
+
     void Awake()
     {
+        mainCamera = Camera.main;
         spriteRenderer = GetComponent<SpriteRenderer>();
+        deckManager = FindObjectOfType<DeckManager>();
+        pointText = GetComponentInChildren<TextMeshProUGUI>(true); // true를 통해 비활성화된 컴포넌트도 찾음
+        
+        if (pointText != null)
+        {
+            pointText.gameObject.SetActive(false); // 초기에는 텍스트를 숨김
+        }
+        
         originalScale = new Vector3(2f, 2f, 2f); // 기본 크기를 2로 설정
         hoverScale = new Vector3(2.3f, 2.3f, 2.3f); // 호버 시 크기를 2.3으로 설정
         transform.localScale = originalScale;
-        
-        // DeckManager 찾기
-        deckManager = FindObjectOfType<DeckManager>();
-        mainCamera = Camera.main;
         
         // 카드 이미지 초기화
         if (cardSprites.Count == 0)
