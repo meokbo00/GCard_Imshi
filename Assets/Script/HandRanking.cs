@@ -343,4 +343,68 @@ public class HandRanking : MonoBehaviour
             redChipText.text = "0";
         }
     }
+
+    // 족보를 구성하는 카드들을 반환하는 메서드
+    public List<Card> GetRankingCards(List<Card> cards)
+    {
+        List<Card> rankingCards = new List<Card>();
+
+        if (IsStraightFlush(cards))
+        {
+            rankingCards.AddRange(cards); // 스트레이트 플러시는 모든 카드 포함
+        }
+        else if (IsFourOfAKind(cards))
+        {
+            // 포카드 구성 카드 찾기
+            var rankGroups = cards.GroupBy(c => c.rank).OrderByDescending(g => g.Count());
+            var fourCards = rankGroups.First().ToList(); // 4장 카드
+            rankingCards.AddRange(fourCards);
+        }
+        else if (IsFullHouse(cards))
+        {
+            // 풀하우스 구성 카드 찾기 (3장 + 2장)
+            var rankGroups = cards.GroupBy(c => c.rank).OrderByDescending(g => g.Count());
+            rankingCards.AddRange(rankGroups.First().ToList()); // 3장 카드
+            rankingCards.AddRange(rankGroups.Skip(1).First().ToList()); // 2장 카드
+        }
+        else if (IsFlush(cards))
+        {
+            rankingCards.AddRange(cards); // 플러시는 모든 카드 포함
+        }
+        else if (IsStraight(cards))
+        {
+            rankingCards.AddRange(cards); // 스트레이트는 모든 카드 포함
+        }
+        else if (IsThreeOfAKind(cards))
+        {
+            // 트리플 구성 카드 찾기
+            var rankGroups = cards.GroupBy(c => c.rank).OrderByDescending(g => g.Count());
+            var threeCards = rankGroups.First().ToList(); // 3장 카드
+            rankingCards.AddRange(threeCards);
+        }
+        else if (IsTwoPair(cards))
+        {
+            // 투페어 구성 카드 찾기
+            var rankGroups = cards.GroupBy(c => c.rank).OrderByDescending(g => g.Count());
+            var firstPair = rankGroups.First().ToList(); // 첫 번째 페어
+            var secondPair = rankGroups.Skip(1).First().ToList(); // 두 번째 페어
+            rankingCards.AddRange(firstPair);
+            rankingCards.AddRange(secondPair);
+        }
+        else if (IsOnePair(cards))
+        {
+            // 원페어 구성 카드 찾기
+            var rankGroups = cards.GroupBy(c => c.rank).OrderByDescending(g => g.Count());
+            var pairCards = rankGroups.First().ToList(); // 페어 카드
+            rankingCards.AddRange(pairCards);
+        }
+        else
+        {
+            // 하이카드의 경우 가장 높은 카드만 반환
+            Card highestCard = cards.OrderByDescending(c => c.rank == Card.Rank.Ace ? 14 : (int)c.rank).First();
+            rankingCards.Add(highestCard);
+        }
+
+        return rankingCards;
+    }
 }

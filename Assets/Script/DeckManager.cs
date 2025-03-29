@@ -289,13 +289,20 @@ public class DeckManager : MonoBehaviour
         // 0.35초 대기
         yield return new WaitForSeconds(0.35f);
 
-        // 왼쪽부터 순서대로 포인트 텍스트 표시
+        // 족보를 구성하는 카드들 찾기
+        List<Card> rankingCards = new List<Card>();
+        if (handRanking != null)
+        {
+            rankingCards = handRanking.GetRankingCards(sortedCards);
+        }
+
+        // 족보를 구성하는 카드들만 포인트 텍스트 표시
         foreach (Card card in sortedCards)
         {
             if (card != null)
             {
                 TextMeshProUGUI pointText = card.GetComponentInChildren<TextMeshProUGUI>(true);
-                if (pointText != null)
+                if (pointText != null && rankingCards.Contains(card))  // 족보 구성 카드만 처리
                 {
                     // 카드 값에 따른 포인트 계산
                     int point = 0;
@@ -330,12 +337,6 @@ public class DeckManager : MonoBehaviour
 
         // 모든 포인트 텍스트 표시가 끝난 후 오른쪽으로 이동 및 새 카드 생성
         yield return StartCoroutine(MoveCardsRightCoroutine());
-
-        // 모든 카드가 버려지고 새 카드가 생성된 후 sumPoint 업데이트
-        if (handRanking != null)
-        {
-            handRanking.UpdateSumPoint();
-        }
     }
 
     public void Suit()
@@ -687,6 +688,7 @@ public class DeckManager : MonoBehaviour
             if (card != null)
             {
                 card.isSelected = false;
+                DiscardCard(card); // 카드를 버린 카드 더미로 이동
             }
         }
         selectedCards.Clear(); // selectedCards 리스트 비우기
@@ -701,9 +703,21 @@ public class DeckManager : MonoBehaviour
                 // 새로운 카드를 (10, -3.5) 위치에서 시작
                 Vector3 startPos = new Vector3(10f, -3.5f, 0f);
                 newCard.transform.position = startPos;
+                
+                // 카드의 원래 위치를 빈 자리로 설정
                 newCard.SetOriginalPosition(emptyPos);
-                // 새로운 카드는 선택되지 않은 상태로 생성
+                
+                // 새로운 카드의 초기 상태 설정
                 newCard.isSelected = false;
+                newCard.transform.localScale = cardScale;
+                
+                // 정렬 순서 초기화
+                SpriteRenderer spriteRenderer = newCard.GetComponent<SpriteRenderer>();
+                if (spriteRenderer != null)
+                {
+                    spriteRenderer.sortingOrder = 0;
+                }
+
                 newCards.Add((newCard, emptyPos));
             }
         }
@@ -729,6 +743,18 @@ public class DeckManager : MonoBehaviour
         foreach (var (card, target) in newCards)
         {
             card.transform.position = target;
+            card.SetOriginalPosition(target); // 최종 위치를 원래 위치로 설정
+            
+            // BoxCollider2D 크기 재조정
+            BoxCollider2D boxCollider = card.GetComponent<BoxCollider2D>();
+            if (boxCollider != null)
+            {
+                SpriteRenderer spriteRenderer = card.GetComponent<SpriteRenderer>();
+                if (spriteRenderer != null && spriteRenderer.sprite != null)
+                {
+                    boxCollider.size = spriteRenderer.sprite.bounds.size;
+                }
+            }
         }
     }
 }
