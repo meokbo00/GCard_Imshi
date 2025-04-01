@@ -1,21 +1,28 @@
 using UnityEngine;
+using TMPro;
 
 public class GameManager : MonoBehaviour
 {
     public DeckManager deckManager;
+    public int money;
+    public int handcount;
+    public int trashcount;
+    public int ante;
+    public int round;
+    public int GoalPoint;
 
-    public void OnDrawCardButtonClick()
+    public TextMeshProUGUI handCountText;
+    public TextMeshProUGUI trashCountText;
+    public TextMeshProUGUI AnteText;
+    public TextMeshProUGUI RoundText;
+    public TextMeshProUGUI GoalPointText;
+
+    private int[] goalPoints = { 300, 450, 600, 800, 1200, 1600, 2000, 3000, 4000, 5000, 7500, 10000, 11000, 16500, 22000, 20000, 27500, 35000, 35000, 52500, 70000, 50000, 75000, 100000, 110000, 165000, 220000, 560000, 840000, 2240000, 7200000, 10800000, 14400000, 300000000, 450000000, 600000000 };
+
+    void Start()
     {
-        if (deckManager.GetDeckCount() > 0)
-        {
-            Card drawnCard = deckManager.DrawCard();
-            if (drawnCard != null)
-            {
-                // 카드를 화면에 표시
-                drawnCard.gameObject.SetActive(true);
-                drawnCard.transform.position = new Vector3(0, 0, 0);
-            }
-        }
+        UpdateGoalPoint();
+        UpdateUI();
     }
 
     public void OnSuitButtonClick()
@@ -30,11 +37,38 @@ public class GameManager : MonoBehaviour
 
     public void OnTrashButtonClick()
     {
+        if (trashcount <= 0 || deckManager.GetSelectedCards().Count == 0) return;
+        trashcount -= 1;
+        UpdateUI();
         deckManager.TrashMove();
     }
 
     public void OnHandPlayButtonClick()
     {
+        if (handcount <= 0 || deckManager.GetSelectedCards().Count == 0) return;
+        handcount -= 1;
+        UpdateUI();
         deckManager.HandPlay();
+    }
+
+    private void UpdateUI()
+    {
+        handCountText.text = handcount.ToString();
+        trashCountText.text = trashcount.ToString();
+        AnteText.text = ante + "/8";
+        RoundText.text = round.ToString();
+        GoalPointText.text = GoalPoint.ToString("N0");
+    }
+
+    private void UpdateGoalPoint()
+    {
+        if (round >= 1 && round <= goalPoints.Length)
+        {
+            GoalPoint = goalPoints[round - 1];
+        }
+        else
+        {
+            GoalPoint = 0;
+        }
     }
 }

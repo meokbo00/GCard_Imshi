@@ -127,9 +127,9 @@ public class DeckManager : MonoBehaviour
         ShuffleDeck();
     }
 
-    public Card[] GetHand()
+    public List<Card> GetHand()
     {
-        return hand.ToArray();
+        return hand;
     }
 
     public int GetDeckCount()
@@ -249,8 +249,7 @@ public class DeckManager : MonoBehaviour
     public void TrashMove()
     {
         if (selectedCards.Count == 0) return; // 선택된 카드가 없으면 아무것도 하지 않음
-
-        StartCoroutine(MoveCardsRightCoroutine());
+        StartCoroutine(MoveCardsRightCoroutine(false)); // false = 점수 업데이트 하지 않음
     }
 
     public void HandPlay()
@@ -625,7 +624,7 @@ public class DeckManager : MonoBehaviour
         return new Vector3(nearestEmptyX, currentPosition.y, currentPosition.z);
     }
 
-    private IEnumerator MoveCardsRightCoroutine()
+    private IEnumerator MoveCardsRightCoroutine(bool updateScore = true)
     {
         float moveDuration = 0.3f; // 이동 시간
         float maxX = 10f; // 최대 x 좌표
@@ -648,8 +647,8 @@ public class DeckManager : MonoBehaviour
             }
         }
 
-        // 카드가 오른쪽으로 이동하기 직전에 sumPoint 업데이트
-        if (handRanking != null)
+        // updateScore가 true일 때만 점수 업데이트
+        if (updateScore && handRanking != null)
         {
             handRanking.UpdateSumPoint();
         }
@@ -756,5 +755,10 @@ public class DeckManager : MonoBehaviour
                 }
             }
         }
+    }
+
+    public List<Card> GetSelectedCards()
+    {
+        return selectedCards;
     }
 }
