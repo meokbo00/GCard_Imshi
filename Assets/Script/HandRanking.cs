@@ -15,12 +15,15 @@ public class HandRanking : MonoBehaviour
     public TextMeshProUGUI sumPointText; // 총 포인트 표시용 텍스트
     public float BlueChip = 0f; // 블루 칩 값
     public float RedChip = 0f; // 레드 칩 값
-    private float sumPoint = 0f; // 누적 포인트 값
+
     private bool isHandPlaying = false; // HandPlay 중인지 여부를 체크하는 플래그
+
+    private GameManager gameManager;
 
     void Start()
     {
         deckManager = FindObjectOfType<DeckManager>();
+        gameManager = FindObjectOfType<GameManager>(); // GameManager 인스턴스 참조
         sumPointText.text = "0"; // 초기값 설정
     }
 
@@ -322,10 +325,10 @@ public class HandRanking : MonoBehaviour
     public void UpdateSumPoint()
     {
         float currentPoints = BlueChip * RedChip;
-        sumPoint += currentPoints;  // 기존 sumPoint에 현재 점수를 더함
+        gameManager.sumPoint += currentPoints;  // 기존 sumPoint에 현재 점수를 더함
         if (sumPointText != null)
         {
-            sumPointText.text = sumPoint.ToString();
+            sumPointText.text = gameManager.sumPoint.ToString(); // UI 업데이트
         }
     }
 
