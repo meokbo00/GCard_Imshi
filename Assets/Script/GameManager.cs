@@ -12,7 +12,8 @@ public class GameManager : MonoBehaviour
     public int ante;
     public int round;
     public int GoalPoint;
-    public float sumPoint;
+    public float gsumPoint;
+
 
     public TextMeshProUGUI handCountText;
     public TextMeshProUGUI trashCountText;

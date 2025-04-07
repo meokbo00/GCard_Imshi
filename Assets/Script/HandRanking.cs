@@ -13,6 +13,7 @@ public class HandRanking : MonoBehaviour
     public TextMeshProUGUI blueChipText; // BlueChip 점수를 표시할 UI 텍스트
     public TextMeshProUGUI redChipText; // 레드 칩 값 표시용 텍스트
     public TextMeshProUGUI sumPointText; // 총 포인트 표시용 텍스트
+    public float sumPoint = 0f; // 총 포인트
     public float BlueChip = 0f; // 블루 칩 값
     public float RedChip = 0f; // 레드 칩 값
 
@@ -325,10 +326,12 @@ public class HandRanking : MonoBehaviour
     public void UpdateSumPoint()
     {
         float currentPoints = BlueChip * RedChip;
-        gameManager.sumPoint += currentPoints;  // 기존 sumPoint에 현재 점수를 더함
+        sumPoint += currentPoints;  // 기존 sumPoint에 현재 점수를 더함
+        gameManager.gsumPoint = sumPoint;
+
         if (sumPointText != null)
         {
-            sumPointText.text = gameManager.sumPoint.ToString(); // UI 업데이트
+            sumPointText.text = sumPoint.ToString(); // UI 업데이트
         }
     }
 
