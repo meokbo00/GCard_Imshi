@@ -39,7 +39,10 @@ public class DeckManager : MonoBehaviour
 
                 // 카드의 초기 위치와 스케일 설정
                 cardObj.transform.position = new Vector3(0, 0, 0);
-                cardObj.transform.localScale = cardScale;
+                // DOTween을 사용하여 카드 스케일 설정 (팝업 효과)
+                cardObj.transform.localScale = Vector3.zero;
+                cardObj.transform.DOScale(cardScale, 0.3f)
+                    .SetEase(Ease.OutBack);
 
                 // BoxCollider2D 크기 자동 조정
                 BoxCollider2D boxCollider = cardObj.GetComponent<BoxCollider2D>();
@@ -95,7 +98,10 @@ public class DeckManager : MonoBehaviour
             // 카드를 활성화하고 초기 위치 설정
             drawnCard.gameObject.SetActive(true);
             drawnCard.transform.position = new Vector3(0, 0, 0);
-            drawnCard.transform.localScale = cardScale;
+            // DOTween을 사용하여 카드 스케일 설정 (팝업 효과)
+            drawnCard.transform.localScale = Vector3.zero;
+            drawnCard.transform.DOScale(cardScale, 0.3f)
+                .SetEase(Ease.OutBack);
 
             // BoxCollider2D 크기 재조정
             BoxCollider2D boxCollider = drawnCard.GetComponent<BoxCollider2D>();
@@ -491,7 +497,10 @@ public class DeckManager : MonoBehaviour
         float targetY = card.isSelected ? -3f : -3.5f; // 선택 상태에 따라 y축 위치 결정
         Vector3 newPosition = new Vector3(card.originalPosition.x - 1.3f, targetY, card.originalPosition.z);
         card.originalPosition = newPosition;
-        StartCoroutine(MoveCardToPosition(card, newPosition));
+        
+        // DOTween을 사용하여 직접 카드 이동
+        card.transform.DOMove(newPosition, 0.2f)
+            .SetEase(Ease.OutQuad);
     }
 
     public void MoveCardRight(Card card)
@@ -499,7 +508,10 @@ public class DeckManager : MonoBehaviour
         float targetY = card.isSelected ? -3f : -3.5f; // 선택 상태에 따라 y축 위치 결정
         Vector3 newPosition = new Vector3(card.originalPosition.x + 1.3f, targetY, card.originalPosition.z);
         card.originalPosition = newPosition;
-        StartCoroutine(MoveCardToPosition(card, newPosition));
+        
+        // DOTween을 사용하여 직접 카드 이동
+        card.transform.DOMove(newPosition, 0.2f)
+            .SetEase(Ease.OutQuad);
     }
 
     private IEnumerator MoveCardToPosition(Card card, Vector3 targetPosition)
