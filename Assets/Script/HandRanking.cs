@@ -70,7 +70,7 @@ public class HandRanking : MonoBehaviour
 
     private void DetermineHandRank(bool resetSumPoint = true)
     {
-        string handRank = "없음";
+        string handRank = " ";
 
         if (selectedCards.Count == 0)
         {

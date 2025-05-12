@@ -246,7 +246,7 @@ public class Card : MonoBehaviour
             if (lastMovedCardPosition != Vector3.zero)
             {
                 // 선택 상태에 따라 y축 위치 결정
-                float targetY = isSelected ? -3f : -3.5f;
+                float targetY = isSelected ? -2f : -2.5f;
                 lastMovedCardPosition.y = targetY;
                 transform.position = lastMovedCardPosition;
                 originalPosition = lastMovedCardPosition;
@@ -256,7 +256,7 @@ public class Card : MonoBehaviour
             {
                 // 이동한 카드가 없으면 원래 위치로 돌아가기
                 // 선택 상태에 따라 y축 위치 결정
-                float targetY = isSelected ? -3f : -3.5f;
+                float targetY = isSelected ? -2f : -2.5f;
                 originalPosition.y = targetY;
                 transform.position = originalPosition;
             }
@@ -285,7 +285,7 @@ public class Card : MonoBehaviour
                 isMovingToOriginal = false;
                 isMovingToSelected = true;
                 selectedPosition = originalPosition;
-                selectedPosition.y = -3f;
+                selectedPosition.y = -2f;
                 currentAnimation = StartCoroutine(MoveToPosition(selectedPosition));
             }
             else
@@ -293,7 +293,7 @@ public class Card : MonoBehaviour
                 isMovingToOriginal = true;
                 isMovingToSelected = false;
                 Vector3 targetPosition = originalPosition;
-                targetPosition.y = -3.5f;
+                targetPosition.y = -2.5f;
                 currentAnimation = StartCoroutine(MoveToPosition(targetPosition));
             }
         }

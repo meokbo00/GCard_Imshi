@@ -167,7 +167,7 @@ public class DeckManager : MonoBehaviour
 
     private void DealInitialCards(int count)
     {
-        Vector3 startPosition = new Vector3(-4f, -3.5f, 0f);
+        Vector3 startPosition = new Vector3(-4f, -2.5f, 0f);
         float xOffset = 1.3f; // x축 간격
         float maxX = 10f; // 시작 위치 (오른쪽)
 
@@ -178,7 +178,7 @@ public class DeckManager : MonoBehaviour
             if (drawnCard != null)
             {
                 // 카드를 오른쪽에 배치
-                Vector3 cardPosition = new Vector3(maxX, -3.5f, 0f);
+                Vector3 cardPosition = new Vector3(maxX, -2.5f, 0f);
                 drawnCard.transform.position = cardPosition;
                 drawnCard.SetOriginalPosition(cardPosition);
             }
@@ -372,7 +372,7 @@ public class DeckManager : MonoBehaviour
         });
 
         // 정렬된 카드들의 시작 위치와 목표 위치 저장
-        Vector3 startPosition = new Vector3(-4f, -3.5f, 0f);
+        Vector3 startPosition = new Vector3(-4f, -2.5f, 0f);
         float xOffset = 1.3f; // x축 간격
         float moveDuration = 0.2f; // 이동 시간
 
@@ -451,7 +451,7 @@ public class DeckManager : MonoBehaviour
         });
 
         // 정렬된 카드들의 시작 위치와 목표 위치 저장
-        Vector3 startPosition = new Vector3(-4f, -3.5f, 0f);
+        Vector3 startPosition = new Vector3(-4f, -2.5f, 0f);
         float xOffset = 1.3f; // x축 간격
         float moveDuration = 0.2f; // 이동 시간
 
@@ -494,7 +494,7 @@ public class DeckManager : MonoBehaviour
 
     public void MoveCardLeft(Card card)
     {
-        float targetY = card.isSelected ? -3f : -3.5f; // 선택 상태에 따라 y축 위치 결정
+        float targetY = card.isSelected ? -2f : -2.5f; // 선택 상태에 따라 y축 위치 결정
         Vector3 newPosition = new Vector3(card.originalPosition.x - 1.3f, targetY, card.originalPosition.z);
         card.originalPosition = newPosition;
         
@@ -505,7 +505,7 @@ public class DeckManager : MonoBehaviour
 
     public void MoveCardRight(Card card)
     {
-        float targetY = card.isSelected ? -3f : -3.5f; // 선택 상태에 따라 y축 위치 결정
+        float targetY = card.isSelected ? -2f : -2.5f; // 선택 상태에 따라 y축 위치 결정
         Vector3 newPosition = new Vector3(card.originalPosition.x + 1.3f, targetY, card.originalPosition.z);
         card.originalPosition = newPosition;
         
@@ -595,9 +595,9 @@ public class DeckManager : MonoBehaviour
         {
             if (card != null)
             {
-                // x축 위치만 저장하고 y축은 -3.5로 고정
+                // x축 위치만 저장하고 y축은 -2.5로 고정
                 Vector3 emptyPos = card.transform.position;
-                emptyPos.y = -3.5f;
+                emptyPos.y = -2.5f;
                 emptyPositions.Add(emptyPos);
 
                 // 시작 위치와 목표 위치 저장
@@ -654,8 +654,8 @@ public class DeckManager : MonoBehaviour
             Card newCard = DrawCard();
             if (newCard != null)
             {
-                // 새로운 카드를 (10, -3.5) 위치에서 시작
-                Vector3 startPos = new Vector3(10f, -3.5f, 0f);
+                // 새로운 카드를 (10, -2.5) 위치에서 시작
+                Vector3 startPos = new Vector3(10f, -2.5f, 0f);
                 newCard.transform.position = startPos;
                 
                 // 카드의 원래 위치를 빈 자리로 설정
@@ -682,7 +682,7 @@ public class DeckManager : MonoBehaviour
             // DOTween을 사용하여 카드 이동
             card.transform.DOMove(target, moveDuration)
                 .SetEase(Ease.OutQuad)
-                .From(new Vector3(10f, -3.5f, 0f)) // 시작 위치를 명시적으로 설정
+                .From(new Vector3(10f, -2.5f, 0f)) // 시작 위치를 명시적으로 설정
                 .OnComplete(() => 
                 {
                     card.SetOriginalPosition(target); // 최종 위치를 원래 위치로 설정

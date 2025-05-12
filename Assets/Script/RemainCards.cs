@@ -41,6 +41,6 @@ public class RemainCards : MonoBehaviour
 
         // 남은 카드 수 계산 (덱에 남은 카드 수 + 활성화된 카드 수)
         int remainCards = deckCards + activeCards;
-        remainText.text = $"({remainCards}/{totalCards})";
+        remainText.text = $"{remainCards}/{totalCards}";
     }
 }
