@@ -83,8 +83,8 @@ public class Card : MonoBehaviour
             pointText.gameObject.SetActive(false); // 초기에는 텍스트를 숨김
         }
         
-        originalScale = new Vector3(2f, 2f, 2f); // 기본 크기를 2로 설정
-        hoverScale = new Vector3(2.3f, 2.3f, 2.3f); // 호버 시 크기를 2.3으로 설정
+        originalScale = new Vector3(1.5f, 1.5f, 1.5f); // 기본 크기를 1.4로 설정
+        hoverScale = new Vector3(1.8f, 1.8f, 1.8f); // 호버 시 크기를 1.7으로 설정
         transform.localScale = originalScale;
         
         // 카드 이미지 초기화
@@ -168,6 +168,9 @@ public class Card : MonoBehaviour
             // 드래그 중인 카드의 양쪽 끝 위치 계산
             float rightEdge = transform.position.x + (cardWidth * transform.localScale.x / 2);
             float leftEdge = transform.position.x - (cardWidth * transform.localScale.x / 2);
+            float normalizedX = (transform.position.x + 4f) / 8f; // -4에서 4 사이의 값을 0에서 1 사이로 정규화
+            int newSortingOrder = Mathf.RoundToInt(normalizedX * 7); // 0-7 사이의 정수로 변환
+            spriteRenderer.sortingOrder = -newSortingOrder;
             
             // 모든 카드를 확인하여 위치 교환 체크
             foreach (Card card in deckManager.GetHand())
@@ -299,7 +302,9 @@ public class Card : MonoBehaviour
         }
 
         // 원래의 정렬 순서로 복원
-        spriteRenderer.sortingOrder = originalSortingOrder;
+        float normalizedX = (transform.position.x + 4f) / 8f;
+        int newSortingOrder = Mathf.RoundToInt(normalizedX * 7);
+        spriteRenderer.sortingOrder = -newSortingOrder;
     }
 
     private void StopCurrentAnimation()

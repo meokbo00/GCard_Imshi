@@ -14,7 +14,7 @@ public class DeckManager : MonoBehaviour
     private List<Card> deck = new List<Card>();
     private List<Card> discardPile = new List<Card>();
     private List<Card> hand = new List<Card>();
-    private Vector3 cardScale = new Vector3(2f, 2f, 2f); // 카드 스케일 설정
+    private Vector3 cardScale = new Vector3(1.5f, 1.5f, 1.5f); // 카드 스케일 설정
     private List<Card> selectedCards = new List<Card>();
     private const int MAX_SELECTED_CARDS = 5;
 
@@ -167,7 +167,7 @@ public class DeckManager : MonoBehaviour
 
     private void DealInitialCards(int count)
     {
-        Vector3 startPosition = new Vector3(-4f, -2.5f, 0f);
+        Vector3 startPosition = new Vector3(-3.5f, -2.5f, 0f);
         float xOffset = 1.3f; // x축 간격
         float maxX = 10f; // 시작 위치 (오른쪽)
 
@@ -181,6 +181,12 @@ public class DeckManager : MonoBehaviour
                 Vector3 cardPosition = new Vector3(maxX, -2.5f, 0f);
                 drawnCard.transform.position = cardPosition;
                 drawnCard.SetOriginalPosition(cardPosition);
+
+            SpriteRenderer spriteRenderer = drawnCard.GetComponent<SpriteRenderer>();
+            if (spriteRenderer != null)
+            {
+                spriteRenderer.sortingOrder = -i; // 인덱스가 커질수록 (왼쪽으로 갈수록) 레이어가 위로
+            }
             }
         }
 

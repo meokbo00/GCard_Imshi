@@ -80,7 +80,7 @@ public class HandRanking : MonoBehaviour
         {
             if (IsStraightFlush(selectedCards))
             {
-                handRank = "스트레이트 플러시";
+                handRank = "스트레이트\n플러시";
                 BlueChip = 100f;
                 RedChip = 8f;
             }
