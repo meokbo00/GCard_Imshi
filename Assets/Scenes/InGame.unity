@@ -464,6 +464,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cardPrefab: {fileID: 2611013713401258576, guid: 01ce4aad69817f04785d691c3ae5d29e, type: 3}
+  playZone: {fileID: 1858049460}
   canvas: {fileID: 1276504261}
   handRanking: {fileID: 448909984}
 --- !u!1 &123317442
@@ -5844,7 +5845,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1858049462}
   - component: {fileID: 1858049461}
-  m_Layer: 0
+  - component: {fileID: 1858049464}
+  m_Layer: 7
   m_Name: PlayZone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5891,7 +5893,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: -10
+  m_SortingOrder: -100
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
   m_Color: {r: 0, g: 0, b: 0, a: 0.4392157}
   m_FlipX: 0
@@ -5912,12 +5914,53 @@ Transform:
   m_GameObject: {fileID: 1858049460}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.52, y: -2.5, z: 0}
+  m_LocalPosition: {x: 1.52, y: -2.5, z: -9}
   m_LocalScale: {x: 10.44516, y: 1.87, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!68 &1858049464
+EdgeCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1858049460}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_EdgeRadius: 0
+  m_Points:
+  - {x: -0.5, y: 0}
+  - {x: 0.5, y: 0}
+  m_AdjacentStartPoint: {x: 0, y: 0}
+  m_AdjacentEndPoint: {x: 0, y: 0}
+  m_UseAdjacentStartPoint: 0
+  m_UseAdjacentEndPoint: 0
 --- !u!1 &1867338734
 GameObject:
   m_ObjectHideFlags: 0
@@ -7923,6 +7966,6 @@ SceneRoots:
   - {fileID: 106378848}
   - {fileID: 1701282250}
   - {fileID: 80086410}
+  - {fileID: 1858049462}
   - {fileID: 1276504262}
   - {fileID: 143103658}
-  - {fileID: 1858049462}

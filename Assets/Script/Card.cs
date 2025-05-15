@@ -76,25 +76,32 @@ public class Card : MonoBehaviour
         mainCamera = Camera.main;
         spriteRenderer = GetComponent<SpriteRenderer>();
         deckManager = FindObjectOfType<DeckManager>();
-        pointText = GetComponentInChildren<TextMeshProUGUI>(true); // true를 통해 비활성화된 컴포넌트도 찾음
+        pointText = GetComponentInChildren<TextMeshProUGUI>(true);
         
         if (pointText != null)
         {
-            pointText.gameObject.SetActive(false); // 초기에는 텍스트를 숨김
+            pointText.gameObject.SetActive(false);
         }
         
-        originalScale = new Vector3(1.5f, 1.5f, 1.5f); // 기본 크기를 1.4로 설정
-        hoverScale = new Vector3(1.8f, 1.8f, 1.8f); // 호버 시 크기를 1.7으로 설정
+        originalScale = new Vector3(1.5f, 1.5f, 1.5f);
+        hoverScale = new Vector3(1.8f, 1.8f, 1.8f);
         transform.localScale = originalScale;
         
-        // 카드 이미지 초기화
         if (cardSprites.Count == 0)
         {
             LoadCardSprites();
         }
 
-        // 원래의 정렬 순서 저장
+        // 카드의 Sorting Order를 높게 설정
+        spriteRenderer.sortingOrder = 100;
         originalSortingOrder = spriteRenderer.sortingOrder;
+        
+        // 카드의 Z 위치를 배경보다 약간 앞으로 조정
+        Vector3 pos = transform.position;
+        transform.position = new Vector3(pos.x, pos.y, -1);
+        
+        // 레이어 설정 (만약 "Cards" 레이어가 Unity에서 설정되어 있다면)
+        gameObject.layer = LayerMask.NameToLayer("Cards");
     }
 
     private void LoadCardSprites()

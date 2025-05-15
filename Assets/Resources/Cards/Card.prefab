@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6596205501203325687}
   - component: {fileID: -864725739603842826}
   - component: {fileID: -5076990015208215629}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Card
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -193,7 +193,7 @@ GameObject:
   - component: {fileID: 5646493014590194539}
   - component: {fileID: 4444210551159166619}
   - component: {fileID: 354020146201244767}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -294,7 +294,7 @@ GameObject:
   - component: {fileID: 2435911944314870699}
   - component: {fileID: 5588825938588619926}
   - component: {fileID: 6649373689866949508}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: PointText
   m_TagString: Untagged
   m_Icon: {fileID: 0}

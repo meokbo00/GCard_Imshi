@@ -7,6 +7,7 @@ using DG.Tweening;
 public class DeckManager : MonoBehaviour
 {
     public GameObject cardPrefab;
+    public GameObject playZone; // PlayZone 오브젝트 참조 추가
     GameOverManager gameovermanager;
 
     public Canvas canvas; // UI 캔버스 참조 추가
@@ -167,59 +168,77 @@ public class DeckManager : MonoBehaviour
 
     private void DealInitialCards(int count)
     {
-        Vector3 startPosition = new Vector3(-3.5f, -2.5f, 0f);
-        float xOffset = 1.3f; // x축 간격
-        float maxX = 10f; // 시작 위치 (오른쪽)
+        Vector3 defaultEndPos = new Vector3(-3.5f, -2.5f, 0f); // 기본 카드 위치
+        float defaultSpacing = 1.3f; // 기본 카드 간격
 
-        // 먼저 모든 카드를 오른쪽에 배치
+        // PlayZone이 있는 경우 해당 영역 사용
+        if (playZone != null)
+        {
+            EdgeCollider2D playZoneCollider = playZone.GetComponent<EdgeCollider2D>();
+            if (playZoneCollider != null)
+            {
+                Bounds playZoneBounds = GetPlayZoneBounds(playZoneCollider);
+                float zoneWidth = playZoneBounds.size.x;
+                float cardWidth = 1.3f; // 카드 폭
+
+                // 전체 사용 가능한 공간 계산
+                float totalWidth = zoneWidth - (cardWidth * count); // 카드들이 차지하는 공간을 빼고 남은 공간
+                defaultSpacing = totalWidth / (count - 1); // 카드 간의 간격
+
+                // 처음 카드의 위치 계산 (왼쪽 마진 + 카드 중앙 위치)
+                float startX = playZoneBounds.min.x + (cardWidth / 2);
+                defaultEndPos = new Vector3(startX, playZoneBounds.center.y, 0f);
+            }
+        }
+
+        // 카드 생성 및 배치
         for (int i = 0; i < count; i++)
         {
             Card drawnCard = DrawCard();
             if (drawnCard != null)
             {
-                // 카드를 오른쪽에 배치
-                Vector3 cardPosition = new Vector3(maxX, -2.5f, 0f);
-                drawnCard.transform.position = cardPosition;
-                drawnCard.SetOriginalPosition(cardPosition);
+                // 최종 위치 계산 (처음 카드 위치 + 간격 * 인덱스)
+                Vector3 finalPosition = new Vector3(
+                    defaultEndPos.x + (defaultSpacing + 1.3f) * i, // 1.3f는 카드 폭
+                    defaultEndPos.y,
+                    0f
+                );
+                
+                // 카드 배치
+                drawnCard.transform.position = finalPosition;
+                drawnCard.SetOriginalPosition(finalPosition);
 
-            SpriteRenderer spriteRenderer = drawnCard.GetComponent<SpriteRenderer>();
-            if (spriteRenderer != null)
-            {
-                spriteRenderer.sortingOrder = -i; // 인덱스가 커질수록 (왼쪽으로 갈수록) 레이어가 위로
-            }
+                // 정렬 순서 설정
+                SpriteRenderer spriteRenderer = drawnCard.GetComponent<SpriteRenderer>();
+                if (spriteRenderer != null)
+                {
+                    spriteRenderer.sortingOrder = -i;
+                }
             }
         }
-
-        // 카드들을 왼쪽으로 이동
-        StartCoroutine(MoveInitialCardsCoroutine(count, startPosition, xOffset));
     }
 
-    private IEnumerator MoveInitialCardsCoroutine(int count, Vector3 startPosition, float xOffset)
-    {
-        float moveDuration = 0.5f; // 이동 시간
-        float maxX = 10f; // 시작 위치 (오른쪽)
 
-        Dictionary<Card, Vector3> targetPositions = new Dictionary<Card, Vector3>();
-        for (int i = 0; i < count; i++)
+
+    private Bounds GetPlayZoneBounds(EdgeCollider2D collider)
+    {
+        Vector2[] points = collider.points;
+        Vector2 min = new Vector2(float.MaxValue, float.MaxValue);
+        Vector2 max = new Vector2(float.MinValue, float.MinValue);
+
+        // 모든 포인트를 검사하여 경계 구하기
+        foreach (Vector2 point in points)
         {
-            Card card = hand[i];
-            if (card != null)
-            {
-                Vector3 targetPos = startPosition + new Vector3(i * xOffset, 0f, 0f);
-                targetPositions[card] = targetPos;
-                
-                // DOTween을 사용하여 카드 이동
-                card.transform.DOMove(targetPos, moveDuration)
-                    .SetEase(Ease.OutQuad)
-                    .OnComplete(() => 
-                    {
-                        card.SetOriginalPosition(targetPos);
-                    });
-            }
+            Vector3 worldPoint = playZone.transform.TransformPoint(point);
+            min.x = Mathf.Min(min.x, worldPoint.x);
+            min.y = Mathf.Min(min.y, worldPoint.y);
+            max.x = Mathf.Max(max.x, worldPoint.x);
+            max.y = Mathf.Max(max.y, worldPoint.y);
         }
 
-        // 모든 애니메이션이 완료될 때까지 대기
-        yield return new WaitForSeconds(moveDuration);
+        Bounds bounds = new Bounds();
+        bounds.SetMinMax(new Vector3(min.x, min.y, 0), new Vector3(max.x, max.y, 0));
+        return bounds;
     }
 
     public bool CanSelectCard()
