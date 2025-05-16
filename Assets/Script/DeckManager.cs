@@ -212,7 +212,7 @@ public class DeckManager : MonoBehaviour
                 SpriteRenderer spriteRenderer = drawnCard.GetComponent<SpriteRenderer>();
                 if (spriteRenderer != null)
                 {
-                    spriteRenderer.sortingOrder = -i;
+                    spriteRenderer.sortingOrder = i;
                 }
             }
         }
@@ -549,6 +549,67 @@ public class DeckManager : MonoBehaviour
         yield return new WaitForSeconds(0.2f);
     }
 
+    // 카드들을 일정한 간격으로 재배치하는 메서드
+    // draggedCard: 현재 드래그 중인 카드 (없을 경우 null)
+    public void RearrangeCards(Card draggedCard = null)
+    {
+        // 카드들을 X 좌표 기준으로 정렬
+        hand.Sort((a, b) => a.originalPosition.x.CompareTo(b.originalPosition.x));
+        
+        // 일정한 간격으로 카드 재배치
+        float startX = -4f; // 첫 번째 카드의 x 좌표
+        float xOffset = 1.3f; // 카드 간격
+        float defaultY = -2.5f; // 기본 y 좌표
+        
+        for (int i = 0; i < hand.Count; i++)
+        {
+            if (hand[i] != null && hand[i] != draggedCard)
+            {
+                // 드래그 중이 아닌 카드의 경우, X 위치만 업데이트하고 Y 위치는 유지
+                float targetY = hand[i].isSelected ? -2f : defaultY;
+                Vector3 targetPosition = new Vector3(startX + (i * xOffset), targetY, 0);
+                
+                // Y 위치는 원래 위치 유지 (드래그 중이 아닌 경우에만)
+                if (hand[i] != draggedCard && !hand[i].isSelected)
+                {
+                    targetPosition.y = hand[i].transform.position.y;
+                }
+                
+                hand[i].originalPosition = targetPosition;
+                
+                // 선택된 카드가 아니면 부드럽게 이동
+                if (!hand[i].isSelected && hand[i] != draggedCard)
+                {
+                    hand[i].transform.DOMoveX(targetPosition.x, 0.2f).SetEase(Ease.OutQuad);
+                }
+            }
+        }
+        
+        // 드래그 중인 카드의 X 위치 업데이트 (Y 위치는 그대로 유지)
+        if (draggedCard != null)
+        {
+            // 가장 가까운 X 위치 찾기
+            float targetX = startX;
+            float minDistance = float.MaxValue;
+            
+            for (int i = 0; i < hand.Count; i++)
+            {
+                float potentialX = startX + (i * xOffset);
+                float distance = Mathf.Abs(draggedCard.transform.position.x - potentialX);
+                
+                if (distance < minDistance)
+                {
+                    minDistance = distance;
+                    targetX = potentialX;
+                }
+            }
+            
+            // Y 위치는 드래그 중인 카드의 현재 위치 유지
+            Vector3 draggedCardPos = draggedCard.transform.position;
+            draggedCard.originalPosition = new Vector3(targetX, draggedCardPos.y, draggedCardPos.z);
+        }
+    }
+    
     public Vector3 FindNearestEmptyPosition(Vector3 currentPosition)
     {
         float xOffset = 1.3f; // 카드 간격

@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using DG.Tweening;
 
 public class Card : MonoBehaviour
 {
@@ -29,6 +30,9 @@ public class Card : MonoBehaviour
     public Vector3 originalPosition;
     private Vector3 hoverPosition;
     private bool isAnimating = false;
+    private Vector2 dragOffset2D; // 2D 드래그 오프셋
+    private Camera mainCamera; // 메인 카메라 참조
+    private Vector3 mouseDownPosition; // 마우스 다운 시의 위치
     private Coroutine currentAnimation;
     private int originalSortingOrder; // 원래의 정렬 순서 저장
 
@@ -56,9 +60,6 @@ public class Card : MonoBehaviour
     private bool isMouseOver = false; // 마우스가 카드 위에 있는지 확인하는 변수 추가
 
     private bool isDragging = false; // 드래그 중인지 확인하는 변수
-    private float dragOffset; // 드래그 시작 시 카드와 마우스 포인트의 x축 차이
-    private Camera mainCamera; // 메인 카메라 참조
-    private Vector3 mouseDownPosition; // 마우스 다운 시의 위치
     private float dragThreshold = 0.5f; // 드래그로 인정할 최소 이동 거리
     private bool isDragStarted = false; // 드래그가 시작되었는지 확인하는 변수
     private float cardWidth = 1.3f; // 카드의 너비 (스케일 고려)
@@ -144,6 +145,7 @@ public class Card : MonoBehaviour
         isDragging = false;
         isDragStarted = false;
         mouseDownPosition = mainCamera.ScreenToWorldPoint(Input.mousePosition);
+        dragOffset2D = Vector2.zero;
         StopCurrentAnimation();
         
         // 클릭 시 가장 위 레이어로 이동
@@ -155,29 +157,38 @@ public class Card : MonoBehaviour
         if (!isDragStarted && isMouseOver)
         {
             Vector3 currentMousePosition = mainCamera.ScreenToWorldPoint(Input.mousePosition);
-            float dragDistance = Mathf.Abs(currentMousePosition.x - mouseDownPosition.x);
+            Vector2 mouseDown2D = new Vector2(mouseDownPosition.x, mouseDownPosition.y);
+            Vector2 currentMouse2D = new Vector2(currentMousePosition.x, currentMousePosition.y);
+            float dragDistance = Vector2.Distance(currentMouse2D, mouseDown2D);
 
             // 드래그 거리가 임계값을 넘으면 드래그 시작
             if (dragDistance > dragThreshold)
             {
                 isDragStarted = true;
                 isDragging = true;
-                dragOffset = transform.position.x - currentMousePosition.x;
+                dragOffset2D = new Vector2(transform.position.x - currentMousePosition.x, transform.position.y - currentMousePosition.y);
             }
         }
 
         if (isDragging)
         {
-            // 마우스 위치를 월드 좌표로 변환하고 x축만 업데이트
+            // 마우스 위치로 카드 이동 (X, Y 모두 이동)
             Vector3 currentMousePosition = mainCamera.ScreenToWorldPoint(Input.mousePosition);
-            transform.position = new Vector3(currentMousePosition.x + dragOffset, transform.position.y, transform.position.z);
+            Vector3 newPos = new Vector3(currentMousePosition.x + dragOffset2D.x, currentMousePosition.y + dragOffset2D.y, transform.position.z);
+            transform.position = newPos;
+            
+            // 드래그 중인 카드의 X 위치에 따라 다른 카드들 재배치 (Y 위치는 유지)
+            deckManager.RearrangeCards(this);
+        }
 
+        if (isDragging)
+        {
             // 드래그 중인 카드의 양쪽 끝 위치 계산
             float rightEdge = transform.position.x + (cardWidth * transform.localScale.x / 2);
             float leftEdge = transform.position.x - (cardWidth * transform.localScale.x / 2);
             float normalizedX = (transform.position.x + 4f) / 8f; // -4에서 4 사이의 값을 0에서 1 사이로 정규화
             int newSortingOrder = Mathf.RoundToInt(normalizedX * 7); // 0-7 사이의 정수로 변환
-            spriteRenderer.sortingOrder = -newSortingOrder;
+            spriteRenderer.sortingOrder = newSortingOrder;
             
             // 모든 카드를 확인하여 위치 교환 체크
             foreach (Card card in deckManager.GetHand())
@@ -252,24 +263,20 @@ public class Card : MonoBehaviour
             isDragging = false;
             isDragStarted = false;
 
-            // 마지막으로 이동한 카드의 위치로 이동
-            if (lastMovedCardPosition != Vector3.zero)
-            {
-                // 선택 상태에 따라 y축 위치 결정
-                float targetY = isSelected ? -2f : -2.5f;
-                lastMovedCardPosition.y = targetY;
-                transform.position = lastMovedCardPosition;
-                originalPosition = lastMovedCardPosition;
-                lastMovedCardPosition = Vector3.zero; // 위치 정보 초기화
-            }
-            else
-            {
-                // 이동한 카드가 없으면 원래 위치로 돌아가기
-                // 선택 상태에 따라 y축 위치 결정
-                float targetY = isSelected ? -2f : -2.5f;
-                originalPosition.y = targetY;
-                transform.position = originalPosition;
-            }
+            // 카드 재배치
+            deckManager.RearrangeCards();
+            
+            // 원래 Y 위치로 돌아가기
+            Vector3 targetPosition = originalPosition;
+            targetPosition.y = -2.5f; // 기본 Y 위치
+            
+            // 부드러운 이동을 위해 DOTween 사용
+            StopCurrentAnimation();
+            transform.DOMove(targetPosition, 0.2f).SetEase(Ease.OutQuad)
+                .OnComplete(() => {
+                    // 이동이 완료된 후 originalPosition 업데이트
+                    originalPosition = targetPosition;
+                });
         }
         else if (isMouseOver) // 클릭 이벤트 처리
         {
@@ -311,7 +318,7 @@ public class Card : MonoBehaviour
         // 원래의 정렬 순서로 복원
         float normalizedX = (transform.position.x + 4f) / 8f;
         int newSortingOrder = Mathf.RoundToInt(normalizedX * 7);
-        spriteRenderer.sortingOrder = -newSortingOrder;
+        spriteRenderer.sortingOrder = newSortingOrder;
     }
 
     private void StopCurrentAnimation()
