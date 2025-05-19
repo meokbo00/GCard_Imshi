@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 8134177dfb8a6fe4b882586d73c80d4d
+guid: 5cb5bdef1e8e2e043a4990f9c853f9a6
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -110,7 +110,8 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: "User Interface - \uBCF5\uC0AC\uBCF8 1_0"
+      name: "User Interface - \uBCF5\uC0AC\uBCF8 - \uBCF5\uC0AC\uBCF8 - \uBCF5\uC0AC\uBCF8
+        (2)_0"
       rect:
         serializedVersion: 2
         x: 0
@@ -124,8 +125,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: fea4ca5358da99d41900cd107833a59e
-      internalID: -1286503308
+      spriteID: 43c31df0ef12b9e4188b6f405c269ddc
+      internalID: 1686318002
       vertices: []
       indices: 
       edges: []
@@ -141,7 +142,7 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      "User Interface - \uBCF5\uC0AC\uBCF8 1_0": -1286503308
+      "User Interface - \uBCF5\uC0AC\uBCF8 - \uBCF5\uC0AC\uBCF8 - \uBCF5\uC0AC\uBCF8 (2)_0": 1686318002
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

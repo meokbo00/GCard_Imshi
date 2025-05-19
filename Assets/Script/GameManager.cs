@@ -6,9 +6,9 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance { get; private set; }
 
     public DeckManager deckManager;
-    public int money;
     public int handcount;
     public int trashcount;
+    public int money;
     public int ante;
     public int round;
     public int GoalPoint;
@@ -17,6 +17,7 @@ public class GameManager : MonoBehaviour
 
     public TextMeshProUGUI handCountText;
     public TextMeshProUGUI trashCountText;
+    public TextMeshProUGUI moneyText;
     public TextMeshProUGUI AnteText;
     public TextMeshProUGUI RoundText;
     public TextMeshProUGUI GoalPointText;
@@ -59,6 +60,7 @@ public class GameManager : MonoBehaviour
     {
         handCountText.text = handcount.ToString();
         trashCountText.text = trashcount.ToString();
+        moneyText.text = "$" + money.ToString("N0");
         AnteText.text = ante + "/8";
         RoundText.text = round.ToString();
         GoalPointText.text = GoalPoint.ToString("N0");

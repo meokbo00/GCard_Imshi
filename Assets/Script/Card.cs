@@ -177,8 +177,8 @@ public class Card : MonoBehaviour
             Vector3 newPos = new Vector3(currentMousePosition.x + dragOffset2D.x, currentMousePosition.y + dragOffset2D.y, transform.position.z);
             transform.position = newPos;
             
-            // 드래그 중인 카드의 X 위치에 따라 다른 카드들 재배치 (Y 위치는 유지)
-            deckManager.RearrangeCards(this);
+            // 드래그 중에는 다른 카드들의 위치를 재조정하지 않음
+            // deckManager.RearrangeCards(this); // 이 줄을 주석 처리하여 다른 카드들의 위치가 움직이지 않도록 함
         }
 
         if (isDragging)
@@ -263,19 +263,26 @@ public class Card : MonoBehaviour
             isDragging = false;
             isDragStarted = false;
 
-            // 카드 재배치
-            deckManager.RearrangeCards();
+            // 카드 재배치 (드래그가 끝난 후에만 재배치)
+            // deckManager.RearrangeCards(this); // this 매개변수 제거
             
-            // 원래 Y 위치로 돌아가기
+            // 선택된 상태에 따라 Y 위치 결정
             Vector3 targetPosition = originalPosition;
-            targetPosition.y = -2.5f; // 기본 Y 위치
+            if (isSelected)
+            {
+                targetPosition.y = -2f; // 선택된 상태의 Y 위치
+            }
+            else
+            {
+                targetPosition.y = -2.5f; // 기본 Y 위치
+            }
             
             // 부드러운 이동을 위해 DOTween 사용
             StopCurrentAnimation();
             transform.DOMove(targetPosition, 0.2f).SetEase(Ease.OutQuad)
                 .OnComplete(() => {
-                    // 이동이 완료된 후 originalPosition 업데이트
-                    originalPosition = targetPosition;
+                    // 이동이 완료된 후 originalPosition 업데이트 (Y 위치는 유지)
+                    originalPosition = transform.position;
                 });
         }
         else if (isMouseOver) // 클릭 이벤트 처리

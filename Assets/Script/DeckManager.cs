@@ -377,6 +377,10 @@ public class DeckManager : MonoBehaviour
             }
         }
 
+
+        // 현재 카드들의 X 위치를 기준으로 정렬
+        activeCards.Sort((a, b) => a.originalPosition.x.CompareTo(b.originalPosition.x));
+        
         // 카드를 모양에 따라 정렬 (스페이드, 다이아, 하트, 클로버 순서)
         activeCards.Sort((a, b) => {
             // 모양 순서 정의
@@ -396,21 +400,30 @@ public class DeckManager : MonoBehaviour
             return suitOrder[a.suit].CompareTo(suitOrder[b.suit]);
         });
 
-        // 정렬된 카드들의 시작 위치와 목표 위치 저장
-        Vector3 startPosition = new Vector3(-4f, -2.5f, 0f);
-        float xOffset = 1.3f; // x축 간격
+        // 현재 카드들의 X 위치를 기준으로 정렬된 위치 계산
+        List<Vector3> sortedPositions = new List<Vector3>();
+        foreach (Card card in activeCards)
+        {
+            sortedPositions.Add(card.originalPosition);
+        }
+        sortedPositions.Sort((a, b) => a.x.CompareTo(b.x));
+
         float moveDuration = 0.2f; // 이동 시간
 
         // 각 카드의 목표 위치 계산 및 이동
         for (int i = 0; i < activeCards.Count; i++)
         {
             Card card = activeCards[i];
-            Vector3 targetPos = startPosition + new Vector3(i * xOffset, 0f, 0f);
+            Vector3 targetPos = sortedPositions[i];
             
-            // 선택된 카드의 경우 현재 y축 위치 유지
+            // 선택된 카드의 경우 y축 위치만 업데이트
             if (card.isSelected)
             {
                 targetPos.y = card.transform.position.y;
+            }
+            else
+            {
+                targetPos.y = -2.5f; // 기본 Y 위치
             }
 
             // DOTween을 사용하여 카드 이동
@@ -438,6 +451,9 @@ public class DeckManager : MonoBehaviour
             }
         }
 
+        // 현재 카드들의 X 위치를 기준으로 정렬
+        activeCards.Sort((a, b) => a.originalPosition.x.CompareTo(b.originalPosition.x));
+        
         // 카드를 값에 따라 정렬 (A, K, Q, J, 10, 9, 8, 7, 6, 5, 4, 3, 2 순서)
         activeCards.Sort((a, b) => {
             // 값 순서 정의
@@ -475,21 +491,30 @@ public class DeckManager : MonoBehaviour
             return rankOrder[a.rank].CompareTo(rankOrder[b.rank]);
         });
 
-        // 정렬된 카드들의 시작 위치와 목표 위치 저장
-        Vector3 startPosition = new Vector3(-4f, -2.5f, 0f);
-        float xOffset = 1.3f; // x축 간격
+        // 현재 카드들의 X 위치를 기준으로 정렬된 위치 계산
+        List<Vector3> sortedPositions = new List<Vector3>();
+        foreach (Card card in activeCards)
+        {
+            sortedPositions.Add(card.originalPosition);
+        }
+        sortedPositions.Sort((a, b) => a.x.CompareTo(b.x));
+
         float moveDuration = 0.2f; // 이동 시간
 
         // 각 카드의 목표 위치 계산 및 이동
         for (int i = 0; i < activeCards.Count; i++)
         {
             Card card = activeCards[i];
-            Vector3 targetPos = startPosition + new Vector3(i * xOffset, 0f, 0f);
+            Vector3 targetPos = sortedPositions[i];
             
-            // 선택된 카드의 경우 현재 y축 위치 유지
+            // 선택된 카드의 경우 y축 위치만 업데이트
             if (card.isSelected)
             {
                 targetPos.y = card.transform.position.y;
+            }
+            else
+            {
+                targetPos.y = -2.5f; // 기본 Y 위치
             }
 
             // DOTween을 사용하여 카드 이동
