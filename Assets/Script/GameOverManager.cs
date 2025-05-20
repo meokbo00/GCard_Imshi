@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class GameOverManager : MonoBehaviour
 {
-    public GameObject MoneyBox;
+    public GameObject CashOutBox;
     public GameObject FailBox;
     public GameObject ShopBox;
     
@@ -14,7 +14,7 @@ public class GameOverManager : MonoBehaviour
     {
         gameManager = FindObjectOfType<GameManager>();
         handRanking = FindObjectOfType<HandRanking>();
-        MoneyBox.SetActive(false);
+        CashOutBox.SetActive(false);
         FailBox.SetActive(false);
     }
     public void IsClearOrFail()
@@ -23,7 +23,7 @@ public class GameOverManager : MonoBehaviour
         if (handRanking.sumPoint >= gameManager.GoalPoint)
         {
             Debug.Log("스테이지 클리어!");
-            MoneyBox.SetActive(true);
+            CashOutBox.SetActive(true);
         }
         else if (gameManager.handcount == 0 && (handRanking.sumPoint < gameManager.GoalPoint))
         {
@@ -34,7 +34,7 @@ public class GameOverManager : MonoBehaviour
     // 머니박스와 실패박스에 달린 버튼을 눌렀을 때 실행되는 메서드
     public void OnCashOutButton()
     {
-        MoneyBox.SetActive(false);
+        CashOutBox.SetActive(false);
         ShopBox.SetActive(true);
     }
 }
