@@ -8,7 +8,7 @@ public class DeckManager : MonoBehaviour
 {
     public GameObject cardPrefab;
     public GameObject playZone; // PlayZone 오브젝트 참조 추가
-    GameOverManager gameovermanager;
+    OverOrClear overorclear;
 
     public Canvas canvas; // UI 캔버스 참조 추가
     public HandRanking handRanking; // HandRanking 참조 추가
@@ -21,7 +21,7 @@ public class DeckManager : MonoBehaviour
 
     void Start()
     {
-        gameovermanager = FindObjectOfType<GameOverManager>();
+        overorclear = FindObjectOfType<OverOrClear>();
         InitializeDeck();
         ShuffleDeck();
         DealInitialCards(8); // 8장의 카드를 뽑아서 배치
@@ -813,7 +813,7 @@ public class DeckManager : MonoBehaviour
 
         // 모든 애니메이션이 완료될 때까지 대기
         yield return new WaitForSeconds(moveDuration);
-        gameovermanager.IsClearOrFail();
+        overorclear.IsClearOrFail();
     }
 
     public List<Card> GetSelectedCards()
