@@ -6,6 +6,10 @@ TagManager:
   tags:
   - Card
   - Zoker
+  - ItemPack
+  - Voucher
+  - Planet
+  - Taro
   layers:
   - Default
   - TransparentFX
