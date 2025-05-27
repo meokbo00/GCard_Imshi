@@ -1,107 +1,70 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System.Linq;
 
 public class GenarateItem : MonoBehaviour
 {
+    [Header("슬롯 참조")]
     public GameObject ZokerSlot1;
     public GameObject ZokerSlot2;
     public GameObject ItemPackSlot1;
     public GameObject ItemPackSlot2;
     public GameObject VoucherSlot1;
 
-    public GameObject ZokerPrefab;
-    public GameObject TaroPrefab;
-    public GameObject PlanetPrefab;
-    public GameObject ItemPackPrefab;
-    public GameObject VoucherPrefab;
-
+    [Header("프리팹 배열")]
+    public GameObject[] ZokerPrefabs;
+    public GameObject[] TaroPrefabs;
+    public GameObject[] PlanetPrefabs;
+    public GameObject[] ItemPackPrefabs;
+    public GameObject[] VoucherPrefabs;
 
     private List<GameObject> instantiatedPrefabs = new List<GameObject>();
-    private Dictionary<GameObject, Sprite> prefabSpriteMap = new Dictionary<GameObject, Sprite>();
 
     private void OnEnable()
     {
         // ShopBox가 활성화되면 프리팹 생성
         InstantiatePrefabs();
     }
-
-    private Sprite LoadRandomSprite(string folderName)
+    
+    private GameObject GetRandomPrefab(GameObject[] prefabArray)
     {
-        // Resources 폴더에서 해당 폴더의 모든 스프라이트 로드
-        Sprite[] sprites = Resources.LoadAll<Sprite>($"ShopItem/{folderName}");
-        
-        if (sprites == null || sprites.Length == 0)
-        {
-            Debug.LogWarning($"No sprites found in folder: {folderName}");
+        if (prefabArray == null || prefabArray.Length == 0)
             return null;
-        }
-        
-        // 랜덤한 스프라이트 반환
-        return sprites[Random.Range(0, sprites.Length)];
+            
+        return prefabArray[Random.Range(0, prefabArray.Length)];
     }
     
-    private void ApplyRandomSprite(GameObject prefab, string folderName)
+    private GameObject GetRandomJokerTypePrefab()
     {
-        if (prefab == null) return;
+        // 랜덤 값 생성 (0~99)
+        float randomValue = Random.Range(0f, 100f);
         
-        // 이미 해당 프리팹에 대한 스프라이트가 로드되어 있지 않은 경우에만 로드
-        if (!prefabSpriteMap.ContainsKey(prefab))
+        // 확률에 따라 프리팹 배열 선택
+        // 조커: 80% (0~79.999...)
+        // 타로: 10% (80~89.999...)
+        // 행성: 10% (90~99.999...)
+        Debug.Log("randomValue: " + randomValue);
+        if (randomValue < 80f && ZokerPrefabs.Length > 0)
         {
-            Sprite randomSprite = LoadRandomSprite(folderName);
-            if (randomSprite != null)
-            {
-                prefabSpriteMap[prefab] = randomSprite;
-            }
+            return GetRandomPrefab(ZokerPrefabs);
+        }
+        else if (randomValue < 90f && TaroPrefabs.Length > 0)
+        {
+            return GetRandomPrefab(TaroPrefabs);
+        }
+        else if (PlanetPrefabs.Length > 0)
+        {
+            return GetRandomPrefab(PlanetPrefabs);
         }
         
-        // 스프라이트 적용
-        if (prefabSpriteMap.TryGetValue(prefab, out Sprite sprite))
-        {
-            SpriteRenderer renderer = prefab.GetComponent<SpriteRenderer>();
-            if (renderer != null)
-            {
-                renderer.sprite = sprite;
-            }
-        }
+        // 기본적으로 조커 프리팹 반환
+        return GetRandomPrefab(ZokerPrefabs);
     }
 
     private void OnDisable()
     {
         // ShopBox가 비활성화되면 프리팹 제거
         ClearPrefabs();
-    }
-
-    private GameObject GetRandomPrefab()
-    {
-        // 사용 가능한 프리팹이 없으면 null 반환
-        if (ZokerPrefab == null && TaroPrefab == null && PlanetPrefab == null)
-            return null;
-        
-        // 랜덤 값 생성 (0~99)
-        float randomValue = Random.Range(0f, 100f);
-        
-        // 확률에 따라 프리팹 선택
-        // ZokerPrefab: 80% (0~79.999...)
-        // TaroPrefab: 10% (80~89.999...)
-        // PlanetPrefab: 10% (90~99.999...)
-        
-        if (randomValue < 80f && ZokerPrefab != null)
-        {
-            return ZokerPrefab;
-        }
-        else if (randomValue < 90f && TaroPrefab != null)
-        {
-            return TaroPrefab;
-        }
-        else if (PlanetPrefab != null)
-        {
-            return PlanetPrefab;
-        }
-        
-        // 만약 선택된 프리팹이 null이면 ZokerPrefab을 반환 (null 방지)
-        return ZokerPrefab ?? TaroPrefab ?? PlanetPrefab;
     }
 
     private void InstantiatePrefabs()
@@ -111,68 +74,81 @@ public class GenarateItem : MonoBehaviour
         // ZokerSlot1에 랜덤 프리팹 생성
         if (ZokerSlot1 != null)
         {
-            GameObject prefabToSpawn = GetRandomPrefab();
+            GameObject prefabToSpawn = GetRandomJokerTypePrefab();
             if (prefabToSpawn != null)
             {
                 GameObject instance = Instantiate(prefabToSpawn, ZokerSlot1.transform.position, Quaternion.identity, ZokerSlot1.transform);
+                // 로컬 포지션 설정
+                Vector3 localPos = instance.transform.localPosition;
+                localPos.z = -1f;
+                instance.transform.localPosition = localPos;
                 instantiatedPrefabs.Add(instance);
-                
-                // 프리팹 타입에 따라 적절한 폴더에서 스프라이트 로드 및 적용
-                if (prefabToSpawn == ZokerPrefab)
-                    ApplyRandomSprite(instance, "Joker");
-                else if (prefabToSpawn == TaroPrefab)
-                    ApplyRandomSprite(instance, "Taro");
-                else if (prefabToSpawn == PlanetPrefab)
-                    ApplyRandomSprite(instance, "Planet");
             }
         }
         
         // ZokerSlot2에 랜덤 프리팹 생성 (ZokerSlot1과 다른 프리팹이 나올 수 있음)
         if (ZokerSlot2 != null)
         {
-            GameObject prefabToSpawn = GetRandomPrefab();
+            GameObject prefabToSpawn = GetRandomJokerTypePrefab();
             if (prefabToSpawn != null)
             {
                 GameObject instance = Instantiate(prefabToSpawn, ZokerSlot2.transform.position, Quaternion.identity, ZokerSlot2.transform);
+                // 로컬 포지션 설정
+                Vector3 localPos = instance.transform.localPosition;
+                localPos.z = -1f;
+                instance.transform.localPosition = localPos;
                 instantiatedPrefabs.Add(instance);
-                
-                // 프리팹 타입에 따라 적절한 폴더에서 스프라이트 로드 및 적용
-                if (prefabToSpawn == ZokerPrefab)
-                    ApplyRandomSprite(instance, "Joker");
-                else if (prefabToSpawn == TaroPrefab)
-                    ApplyRandomSprite(instance, "Taro");
-                else if (prefabToSpawn == PlanetPrefab)
-                    ApplyRandomSprite(instance, "Planet");
             }
         }
         
-        // Instantiate ItemPack prefabs
-        if (ItemPackSlot1 != null && ItemPackPrefab != null)
+        // ItemPack 슬롯에 프리팹 생성
+        if (ItemPackSlot1 != null && ItemPackPrefabs.Length > 0)
         {
-            GameObject instance = Instantiate(ItemPackPrefab, ItemPackSlot1.transform.position, Quaternion.identity, ItemPackSlot1.transform);
-            instantiatedPrefabs.Add(instance);
-            ApplyRandomSprite(instance, "ItemPack");
+            GameObject prefabToSpawn = GetRandomPrefab(ItemPackPrefabs);
+            if (prefabToSpawn != null)
+            {
+                GameObject instance = Instantiate(prefabToSpawn, ItemPackSlot1.transform.position, Quaternion.identity, ItemPackSlot1.transform);
+                // 로컬 포지션 설정
+                Vector3 localPos = instance.transform.localPosition;
+                localPos.z = -1f;
+                instance.transform.localPosition = localPos;
+                instantiatedPrefabs.Add(instance);
+            }
         }
         
-        if (ItemPackSlot2 != null && ItemPackPrefab != null)
+        if (ItemPackSlot2 != null && ItemPackPrefabs.Length > 0)
         {
-            GameObject instance = Instantiate(ItemPackPrefab, ItemPackSlot2.transform.position, Quaternion.identity, ItemPackSlot2.transform);
-            instantiatedPrefabs.Add(instance);
-            ApplyRandomSprite(instance, "ItemPack");
+            GameObject prefabToSpawn = GetRandomPrefab(ItemPackPrefabs);
+            if (prefabToSpawn != null)
+            {
+                GameObject instance = Instantiate(prefabToSpawn, ItemPackSlot2.transform.position, Quaternion.identity, ItemPackSlot2.transform);
+                // 로컬 포지션 설정
+                Vector3 localPos = instance.transform.localPosition;
+                localPos.z = -1f;
+                instance.transform.localPosition = localPos;
+                instantiatedPrefabs.Add(instance);
+            }
         }
         
-        // Instantiate Voucher prefab
-        if (VoucherSlot1 != null && VoucherPrefab != null)
+        // Voucher 슬롯에 프리팹 생성
+        if (VoucherSlot1 != null && VoucherPrefabs.Length > 0)
         {
-            GameObject instance = Instantiate(VoucherPrefab, VoucherSlot1.transform.position, Quaternion.identity, VoucherSlot1.transform);
-            instantiatedPrefabs.Add(instance);
-            ApplyRandomSprite(instance, "Voucher");
+            GameObject prefabToSpawn = GetRandomPrefab(VoucherPrefabs);
+            if (prefabToSpawn != null)
+            {
+                GameObject instance = Instantiate(prefabToSpawn, VoucherSlot1.transform.position, Quaternion.identity, VoucherSlot1.transform);
+                // 로컬 포지션 설정
+                Vector3 localPos = instance.transform.localPosition;
+                localPos.z = -1f;
+                instance.transform.localPosition = localPos;
+                instantiatedPrefabs.Add(instance);
+            }
         }
     }
 
     private void ClearPrefabs()
     {
-        // Destroy all instantiated prefabs
+        // 생성된 모든 프리팹 제거
         foreach (var prefab in instantiatedPrefabs)
         {
             if (prefab != null)
@@ -181,7 +157,6 @@ public class GenarateItem : MonoBehaviour
             }
         }
         instantiatedPrefabs.Clear();
-        prefabSpriteMap.Clear();
     }
 
 
