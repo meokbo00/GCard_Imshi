@@ -259,6 +259,7 @@ GameObject:
   - component: {fileID: 6596205501203325687}
   - component: {fileID: -864725739603842826}
   - component: {fileID: -5076990015208215629}
+  - component: {fileID: 8361079273942940815}
   m_Layer: 6
   m_Name: 0Joker 5
   m_TagString: Zoker
@@ -404,8 +405,23 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.0001, y: 0.0001}
+  m_Size: {x: 1.4003323, y: 1.867098}
   m_EdgeRadius: 0
+--- !u!114 &8361079273942940815
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2611013713401258576}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 450f0e5c9d763da43a746ee88ce32a36, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  returnDuration: 0.3
+  returnEase: 27
+  dragSmoothing: 0.1
 --- !u!1 &4505502948477483451
 GameObject:
   m_ObjectHideFlags: 0

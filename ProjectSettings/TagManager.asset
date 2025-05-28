@@ -10,6 +10,7 @@ TagManager:
   - Voucher
   - Planet
   - Taro
+  - DropZone
   layers:
   - Default
   - TransparentFX

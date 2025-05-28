@@ -19,6 +19,7 @@ public class GenarateItem : MonoBehaviour
     public GameObject[] VoucherPrefabs;
 
     private List<GameObject> instantiatedPrefabs = new List<GameObject>();
+    private List<GameObject> usedJokerPrefabs = new List<GameObject>();
 
     private void OnEnable()
     {
@@ -34,37 +35,86 @@ public class GenarateItem : MonoBehaviour
         return prefabArray[Random.Range(0, prefabArray.Length)];
     }
     
-    private GameObject GetRandomJokerTypePrefab()
+    private GameObject GetRandomJokerTypePrefab(bool isSecondSlot = false)
     {
         // 랜덤 값 생성 (0~99)
         float randomValue = Random.Range(0f, 100f);
+        
+        // 사용 가능한 프리팹 목록
+        List<GameObject> availablePrefabs = new List<GameObject>();
         
         // 확률에 따라 프리팹 배열 선택
         // 조커: 80% (0~79.999...)
         // 타로: 10% (80~89.999...)
         // 행성: 10% (90~99.999...)
-        Debug.Log("randomValue: " + randomValue);
+        
+        GameObject[] targetPrefabs = null;
+        
         if (randomValue < 80f && ZokerPrefabs.Length > 0)
         {
-            return GetRandomPrefab(ZokerPrefabs);
+            targetPrefabs = ZokerPrefabs;
         }
         else if (randomValue < 90f && TaroPrefabs.Length > 0)
         {
-            return GetRandomPrefab(TaroPrefabs);
+            targetPrefabs = TaroPrefabs;
         }
         else if (PlanetPrefabs.Length > 0)
         {
-            return GetRandomPrefab(PlanetPrefabs);
+            targetPrefabs = PlanetPrefabs;
+        }
+        else
+        {
+            // 기본적으로 조커 프리팹 사용
+            targetPrefabs = ZokerPrefabs;
         }
         
-        // 기본적으로 조커 프리팹 반환
-        return GetRandomPrefab(ZokerPrefabs);
+        if (targetPrefabs == null || targetPrefabs.Length == 0)
+            return null;
+        
+        // 사용 가능한 프리팹 필터링 (두 번째 슬롯인 경우 이미 사용된 프리팹 제외)
+        if (isSecondSlot && usedJokerPrefabs.Count > 0)
+        {
+            foreach (var prefab in targetPrefabs)
+            {
+                if (prefab != null && !usedJokerPrefabs.Contains(prefab))
+                {
+                    availablePrefabs.Add(prefab);
+                }
+            }
+            
+            // 사용 가능한 프리팹이 없으면 원본 배열에서 랜덤 선택
+            if (availablePrefabs.Count == 0)
+            {
+                availablePrefabs.AddRange(targetPrefabs);
+            }
+        }
+        else
+        {
+            availablePrefabs.AddRange(targetPrefabs);
+        }
+        
+        // 랜덤하게 프리팹 선택
+        if (availablePrefabs.Count > 0)
+        {
+            GameObject selectedPrefab = availablePrefabs[Random.Range(0, availablePrefabs.Count)];
+            
+            // 첫 번째 슬롯의 프리팹은 추적 목록에 추가
+            if (!isSecondSlot && selectedPrefab != null && !usedJokerPrefabs.Contains(selectedPrefab))
+            {
+                usedJokerPrefabs.Add(selectedPrefab);
+            }
+            
+            return selectedPrefab;
+        }
+        
+        return null;
     }
 
     private void OnDisable()
     {
         // ShopBox가 비활성화되면 프리팹 제거
         ClearPrefabs();
+        usedJokerPrefabs.Clear();
     }
 
     private void InstantiatePrefabs()
@@ -74,7 +124,7 @@ public class GenarateItem : MonoBehaviour
         // ZokerSlot1에 랜덤 프리팹 생성
         if (ZokerSlot1 != null)
         {
-            GameObject prefabToSpawn = GetRandomJokerTypePrefab();
+            GameObject prefabToSpawn = GetRandomJokerTypePrefab(false);
             if (prefabToSpawn != null)
             {
                 GameObject instance = Instantiate(prefabToSpawn, ZokerSlot1.transform.position, Quaternion.identity, ZokerSlot1.transform);
@@ -86,10 +136,10 @@ public class GenarateItem : MonoBehaviour
             }
         }
         
-        // ZokerSlot2에 랜덤 프리팹 생성 (ZokerSlot1과 다른 프리팹이 나올 수 있음)
+        // ZokerSlot2에 랜덤 프리팹 생성 (ZokerSlot1과 다른 프리팹이 나오도록 보장)
         if (ZokerSlot2 != null)
         {
-            GameObject prefabToSpawn = GetRandomJokerTypePrefab();
+            GameObject prefabToSpawn = GetRandomJokerTypePrefab(true);
             if (prefabToSpawn != null)
             {
                 GameObject instance = Instantiate(prefabToSpawn, ZokerSlot2.transform.position, Quaternion.identity, ZokerSlot2.transform);
