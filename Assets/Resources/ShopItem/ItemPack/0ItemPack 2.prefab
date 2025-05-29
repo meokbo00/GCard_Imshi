@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: -864725739603842826}
   - component: {fileID: -5076990015208215629}
   - component: {fileID: 7604900813238518237}
+  - component: {fileID: -5601492102933757935}
   m_Layer: 6
   m_Name: 0ItemPack 2
   m_TagString: ItemPack
@@ -175,6 +176,21 @@ MonoBehaviour:
   returnDuration: 0.3
   returnEase: 27
   dragSmoothing: 0.1
+--- !u!114 &-5601492102933757935
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2611013713401258576}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 63325b7e4e5aaa544acfb9978bd4ef9d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pricetag: {fileID: 4676625080418675744}
+  price: 2
+  skill: 
 --- !u!1 &3666253360382527512
 GameObject:
   m_ObjectHideFlags: 0

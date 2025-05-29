@@ -51,6 +51,7 @@ GameObject:
   - component: {fileID: -864725739603842826}
   - component: {fileID: -5076990015208215629}
   - component: {fileID: 7151634524933418414}
+  - component: {fileID: 5067517577233016115}
   m_Layer: 6
   m_Name: 0Planet 1
   m_TagString: Planet
@@ -213,6 +214,21 @@ MonoBehaviour:
   returnDuration: 0.3
   returnEase: 27
   dragSmoothing: 0.1
+--- !u!114 &5067517577233016115
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2611013713401258576}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 63325b7e4e5aaa544acfb9978bd4ef9d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pricetag: {fileID: 1326954627087755924}
+  price: 1
+  skill: 
 --- !u!1 &3081038675950559613
 GameObject:
   m_ObjectHideFlags: 0
