@@ -7140,7 +7140,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1348907963
 RectTransform:
   m_ObjectHideFlags: 0
@@ -10218,7 +10218,7 @@ MonoBehaviour:
   deckManager: {fileID: 106378849}
   handcount: 4
   trashcount: 4
-  money: 17
+  money: 26
   ante: 1
   round: 1
   GoalPoint: 0

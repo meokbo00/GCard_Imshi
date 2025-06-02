@@ -14,8 +14,10 @@ public class OverOrClear : MonoBehaviour
     
     HandRanking handRanking;
     GameManager gameManager;
+    CashOutManager cashOutManager;
     void Start()
     {
+        cashOutManager = FindObjectOfType<CashOutManager>();
         gameManager = FindObjectOfType<GameManager>();
         handRanking = FindObjectOfType<HandRanking>();
         CashOutBox.SetActive(false);
@@ -141,6 +143,8 @@ public class OverOrClear : MonoBehaviour
     // 머니박스와 실패박스에 달린 버튼을 눌렀을 때 실행되는 메서드
     public void OnCashOutButton()
     {
+        gameManager.money += cashOutManager.totalmoney;
+        gameManager.UpdateUI();
         StartCoroutine(HideCashOutAndShowShop());
     }
     

@@ -56,7 +56,7 @@ public class GameManager : MonoBehaviour
         deckManager.HandPlay();
     }
 
-    private void UpdateUI()
+    public void UpdateUI()
     {
         handCountText.text = handcount.ToString();
         trashCountText.text = trashcount.ToString();
