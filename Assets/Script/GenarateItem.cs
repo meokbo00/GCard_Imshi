@@ -258,7 +258,7 @@ public class GenarateItem : MonoBehaviour
     }
 
     // ZokerSlot1과 ZokerSlot2의 프리팹을 새로운 랜덤 프리팹으로 교체 (서로 다른 프리팹이 생성됨)
-    public void ReplaceJokerPrefabs()
+    public void OnRerollBtnClick()
     {
         // 이전에 사용된 조커 프리팹 저장
         List<GameObject> previousJokers = new List<GameObject>();
