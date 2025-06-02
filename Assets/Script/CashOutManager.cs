@@ -11,6 +11,8 @@ public class CashOutManager : MonoBehaviour
     public GameObject CashOutBox;
     public GameObject CashOutBtn;
     public GameObject BG;
+    public GameObject DollarPrefab;
+    public GameObject MinusPrefab;
 
     [Header("캐시아웃 버튼 텍스트에 출력될 총 돈의 값")]
     public TextMeshProUGUI BtnMoneyTxt;
@@ -30,6 +32,12 @@ public class CashOutManager : MonoBehaviour
     
     GameManager gameManager;
 
+    [Header("이자 관련 설정")]
+    [Tooltip("이자 한계값 (기본값: 5, money 25 이상일 때 최대치)")]
+    public int interestMaxLimit = 5;
+    [Tooltip("이자 증가 단위 (money 5당 1 증가)")]
+    public int interestIncrementUnit = 5;
+    
     [Header("캐시아웃에서 받을 돈의 값이 저장되는 변수")]
     public int clearreward = 0;
     public int remainhand = 0;
@@ -44,8 +52,6 @@ public class CashOutManager : MonoBehaviour
     {
         CashOutBtn.SetActive(false);
         gameManager = FindAnyObjectByType<GameManager>();
-
-
     }
 
     IEnumerator ActivateTextsSequentially()
@@ -138,11 +144,14 @@ public class CashOutManager : MonoBehaviour
     
     public void ShowTotalMoney()
     {
-        if(gameManager.money >= 5 && gameManager.money < 10) interestmoney = 1;
-        else if(gameManager.money >= 10 && gameManager.money < 15) interestmoney = 2;
-        else if(gameManager.money >= 15 && gameManager.money < 20) interestmoney = 3;
-        else if(gameManager.money >= 20 && gameManager.money < 25) interestmoney = 4;
-        else if(gameManager.money >= 25) interestmoney = 5;
+        // money를 단위로 나누어 interest 계산 (5당 1 증가, 최대 interestMaxLimit)
+        interestmoney = Mathf.Min(
+            gameManager.money / interestIncrementUnit,  // money를 단위로 나눈 값
+            interestMaxLimit                            // 최대값 제한
+        );
+        
+        // 0 이하인 경우 0으로 설정 (옵션: 필요에 따라 제거 가능)
+        interestmoney = Mathf.Max(0, interestmoney);
 
         remainhand = gameManager.handcount;
         totalmoney = clearreward + remainhand + interestmoney + isjokerskill;

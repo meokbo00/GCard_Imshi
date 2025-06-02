@@ -5627,6 +5627,8 @@ MonoBehaviour:
   CashOutBox: {fileID: 1348907962}
   CashOutBtn: {fileID: 883962344}
   BG: {fileID: 1645917005}
+  DollarPrefab: {fileID: 4740276508071962110, guid: b0baf7e340a03ee46b0e97b8becc9e08, type: 3}
+  MinusPrefab: {fileID: 2209447247975535558, guid: 308349505b030744982d93e5ffd3fc7e, type: 3}
   BtnMoneyTxt: {fileID: 492572781}
   ClearTxt: {fileID: 87327625}
   RemainHandTxt: {fileID: 1278007172}
@@ -5636,6 +5638,8 @@ MonoBehaviour:
   RemainHandM: {fileID: 1226639962}
   InterestM: {fileID: 63129413}
   JokerSkillM: {fileID: 1976362725}
+  interestMaxLimit: 5
+  interestIncrementUnit: 5
   clearreward: 0
   remainhand: 0
   interestmoney: 0
@@ -7136,7 +7140,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1348907963
 RectTransform:
   m_ObjectHideFlags: 0
@@ -10214,7 +10218,7 @@ MonoBehaviour:
   deckManager: {fileID: 106378849}
   handcount: 4
   trashcount: 4
-  money: 13
+  money: 17
   ante: 1
   round: 1
   GoalPoint: 0
