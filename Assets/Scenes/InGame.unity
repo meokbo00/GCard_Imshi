@@ -2242,7 +2242,9 @@ GameObject:
   m_Component:
   - component: {fileID: 444454613}
   - component: {fileID: 444454615}
-  - component: {fileID: 444454614}
+  - component: {fileID: 444454616}
+  - component: {fileID: 444454617}
+  - component: {fileID: 444454618}
   m_Layer: 0
   m_Name: BuyZone
   m_TagString: Untagged
@@ -2258,67 +2260,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 444454612}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -3.4637, y: -0.0185, z: 9}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -3.4637, y: -0.01850009, z: 9}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1044374141}
-  m_Father: {fileID: 470802725}
+  m_Father: {fileID: 1351973792}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!68 &444454614
-EdgeCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 444454612}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_EdgeRadius: 0
-  m_Points:
-  - {x: -5.4507775, y: -0.82096815}
-  - {x: -5.390901, y: -0.94796085}
-  - {x: -5.242037, y: -1.0416789}
-  - {x: 5.2736263, y: -1.0350788}
-  - {x: 5.3607063, y: -1.0037575}
-  - {x: 5.4571266, y: -0.8435552}
-  - {x: 5.4517365, y: 0.8399718}
-  - {x: 5.3941927, y: 0.9422376}
-  - {x: 5.3391027, y: 0.9930227}
-  - {x: 5.255952, y: 1.0259492}
-  - {x: -5.2800636, y: 1.0300186}
-  - {x: -5.4101763, y: 0.93220115}
-  - {x: -5.4523335, y: 0.82358956}
-  - {x: -5.452681, y: -0.80615664}
-  m_AdjacentStartPoint: {x: 0, y: 0}
-  m_AdjacentEndPoint: {x: 0, y: 0}
-  m_UseAdjacentStartPoint: 0
-  m_UseAdjacentEndPoint: 0
 --- !u!212 &444454615
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -2371,6 +2320,91 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!61 &444454616
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 444454612}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0.25, y: 0.25, z: 0.25, w: 0.25}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1, y: 1}
+    newSize: {x: 10.901555, y: 2.0664628}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 2
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 10.909841, y: 2.0027738}
+  m_EdgeRadius: 0
+--- !u!50 &444454617
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 444454612}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 1
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
+--- !u!114 &444454618
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 444454612}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f806396458632b34bbd96243ad58225a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Itemcost: {fileID: 345283428}
 --- !u!1 &448909981
 GameObject:
   m_ObjectHideFlags: 0
@@ -2632,7 +2666,7 @@ Transform:
   - {fileID: 1026417766}
   - {fileID: 1265913625}
   - {fileID: 1301747865}
-  - {fileID: 444454613}
+  - {fileID: 1351973792}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &481595815
@@ -5580,7 +5614,7 @@ GameObject:
   - component: {fileID: 1026417768}
   - component: {fileID: 1026417767}
   m_Layer: 0
-  m_Name: ZokerZone
+  m_Name: JokerZone
   m_TagString: DropZone
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7578,7 +7612,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1351167963}
   m_Layer: 0
-  m_Name: ZokerManager
+  m_Name: JokerManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7598,6 +7632,38 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 481595816}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1351973791
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1351973792}
+  m_Layer: 0
+  m_Name: BuyZone
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1351973792
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1351973791}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 444454613}
+  m_Father: {fileID: 470802725}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1358796399
 GameObject:
@@ -8053,7 +8119,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1370444676}
   m_Layer: 5
-  m_Name: ZokerSlot
+  m_Name: JokerSlot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10884,8 +10950,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1744671366}
+  - component: {fileID: 1744671367}
   m_Layer: 0
-  m_Name: ItemBuyManager
+  m_Name: ShowBuyUseZone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10906,6 +10973,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 481595816}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1744671367
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1744671365}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6c5be8bf226c5043a2d455d53752c0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  BuyZone: {fileID: 444454612}
 --- !u!1 &1745501132
 GameObject:
   m_ObjectHideFlags: 0

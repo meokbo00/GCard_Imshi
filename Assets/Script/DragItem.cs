@@ -10,6 +10,8 @@ public class DragItem : MonoBehaviour
     private Vector3 dragStartPosition;
     private Vector3 dragStartWorldPosition; // 드래그 시작 시 월드 위치
     private Tween returnTween; // 현재 진행 중인 트윈 참조
+    public bool isDrag = false;
+    public string currentTag = "None";
 
     [Header("Tween Settings")]
     [SerializeField] private float returnDuration = 0.3f; // 복귀 애니메이션 지속 시간
@@ -23,17 +25,15 @@ public class DragItem : MonoBehaviour
 
     private void OnMouseDown()
     {
-        // 기존 트윈이 있다면 중지
         returnTween?.Kill();
         
-        // 현재 위치를 드래그 시작 위치로 저장
         dragStartWorldPosition = transform.position;
-        
-        // 마우스 다운 위치 저장
         dragStartPosition = Input.mousePosition;
         isDragging = false;
+        isDrag = true;
+        currentTag = gameObject.tag;
+        Debug.Log($"드래그 시작 - 태그: {currentTag}");
         
-        // 오브젝트와 마우스 위치의 차이 계산 (즉시 설정)
         Vector3 mouseWorldPos = mainCamera.ScreenToWorldPoint(
             new Vector3(Input.mousePosition.x, Input.mousePosition.y, 
             transform.position.z - mainCamera.transform.position.z));
@@ -70,6 +70,9 @@ public class DragItem : MonoBehaviour
             ReturnToDragStartPosition();
         }
         isDragging = false;
+        isDrag = false;
+        currentTag = "None";
+        Debug.Log("드래그 종료 - 태그 초기화");
     }
     
     private void ReturnToDragStartPosition()

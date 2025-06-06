@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8523582981311886525}
   - component: {fileID: 5921467157933231628}
   - component: {fileID: 8754349077446114452}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: BG2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -89,7 +89,7 @@ GameObject:
   - component: {fileID: -5076990015208215629}
   - component: {fileID: 1454321090396628673}
   - component: {fileID: -1993012187098514366}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: 0Voucher 10
   m_TagString: Voucher
   m_Icon: {fileID: 0}
@@ -105,7 +105,7 @@ Transform:
   m_GameObject: {fileID: 2611013713401258576}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.4393864, y: -3.0759099, z: 0.035540216}
+  m_LocalPosition: {x: -2.4393864, y: -3.0759099, z: 1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -275,7 +275,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2792489955895216219}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: PriceTag
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -316,7 +316,7 @@ GameObject:
   - component: {fileID: 5646493014590194539}
   - component: {fileID: 4444210551159166619}
   - component: {fileID: 354020146201244767}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -418,7 +418,7 @@ GameObject:
   - component: {fileID: 1283562112793193282}
   - component: {fileID: 4829526525791265603}
   - component: {fileID: 1970893767642011490}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: PriceTxt
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -552,7 +552,7 @@ GameObject:
   - component: {fileID: 2435911944314870699}
   - component: {fileID: 5588825938588619926}
   - component: {fileID: 6649373689866949508}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: PointText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -686,7 +686,7 @@ GameObject:
   - component: {fileID: 1556827019971960533}
   - component: {fileID: 6753611596527198788}
   - component: {fileID: 4828362422392011401}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: BG1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
