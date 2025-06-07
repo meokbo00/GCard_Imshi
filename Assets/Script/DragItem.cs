@@ -10,6 +10,8 @@ public class DragItem : MonoBehaviour
     private Vector3 dragStartPosition;
     private Vector3 dragStartWorldPosition; // 드래그 시작 시 월드 위치
     private Tween returnTween; // 현재 진행 중인 트윈 참조
+
+    public GameObject PriceTag;
     public bool isDrag = false;
     public string currentTag = "None";
 
@@ -49,6 +51,7 @@ public class DragItem : MonoBehaviour
             if (Vector3.Distance(dragStartPosition, Input.mousePosition) > dragThreshold)
             {
                 isDragging = true;
+                PriceTag.SetActive(false);
             }
             return; // 드래그 시작 전에는 아무 동작도 하지 않음
         }
@@ -72,6 +75,7 @@ public class DragItem : MonoBehaviour
         isDragging = false;
         isDrag = false;
         currentTag = "None";
+        PriceTag.SetActive(true);
         Debug.Log("드래그 종료 - 태그 초기화");
     }
     

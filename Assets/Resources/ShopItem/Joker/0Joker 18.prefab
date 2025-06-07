@@ -420,6 +420,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 450f0e5c9d763da43a746ee88ce32a36, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PriceTag: {fileID: 1530997538194645132}
   isDrag: 0
   currentTag: None
   returnDuration: 0.3

@@ -248,6 +248,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 450f0e5c9d763da43a746ee88ce32a36, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PriceTag: {fileID: 3230502621908658989}
+  isDrag: 0
+  currentTag: None
   returnDuration: 0.3
   returnEase: 27
   dragSmoothing: 0.1

@@ -31,7 +31,7 @@ public class BuyZone : MonoBehaviour
                 var jokerStat = draggingItem.GetComponent<JokerStat>();
                 if (jokerStat != null)
                 {
-                    // 가격 표시 (예: "$100")
+                    // 가격 표시
                     Itemcost.text = "($" + jokerStat.price.ToString() + ")";
                     return;
                 }
