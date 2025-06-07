@@ -12,6 +12,8 @@ TagManager:
   - Taro
   - DropZone
   - Joker
+  - JokerZone
+  - BuyJoker
   layers:
   - Default
   - TransparentFX

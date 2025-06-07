@@ -56,6 +56,18 @@ public class GameManager : MonoBehaviour
         deckManager.HandPlay();
     }
 
+    public void BuyItem(int price)
+    {
+        money -= price;
+        UpdateUI();
+    }
+
+    public void SellItem(int price)
+    {
+        money += price;
+        UpdateUI();
+    }
+
     public void UpdateUI()
     {
         handCountText.text = handcount.ToString();

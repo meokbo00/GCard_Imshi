@@ -1,5 +1,7 @@
 using UnityEngine;
 using DG.Tweening;
+using System.Linq;
+using System.Collections.Generic;
 
 public class DragItem : MonoBehaviour
 {
@@ -13,6 +15,7 @@ public class DragItem : MonoBehaviour
 
     public GameObject PriceTag;
     public bool isDrag = false;
+    public bool isInBuyZone = false;
     public string currentTag = "None";
 
     [Header("Tween Settings")]
@@ -69,13 +72,110 @@ public class DragItem : MonoBehaviour
     {
         if (isDragging)
         {
+            // 구매 영역 안에서 드롭한 경우
+            if (isInBuyZone)
+            {
+                GameManager gameManager = FindObjectOfType<GameManager>();
+                // 현재 드래그 중인 오브젝트의 JokerStat 컴포넌트 가져오기
+                JokerStat jokerStat = GetComponent<JokerStat>();
+                
+                if (gameManager != null)
+                {
+                    if (jokerStat != null)
+                    {
+                        // 현재 오브젝트의 JokerStat에서 가격 가져오기
+                        if (gameManager.money - jokerStat.price >= 0)
+                        {
+                            gameManager.BuyItem(jokerStat.price);
+                            Debug.Log($"구매확정!\n보유 금액: ${gameManager.money}\n아이템 가격: ${jokerStat.price}");
+                            
+                            // 구매 성공 시 JokerZone으로 이동
+                            GameObject jokerZone = GameObject.FindGameObjectWithTag("JokerZone");
+                            if (jokerZone != null)
+                            {
+                                // 드래그 중지 및 위치 고정
+                                isDragging = false;
+                                isDrag = false;
+                                
+                                // JokerZone의 자식으로 설정
+                                transform.SetParent(jokerZone.transform);
+                                
+                                // BoxCollider2D 가져오기
+                                var boxCollider = jokerZone.GetComponent<BoxCollider2D>();
+                                if (boxCollider != null)
+                                {
+                                    // 태그를 "BuyJoker"로 변경 (먼저 태그를 변경해야 함)
+                                    gameObject.tag = "BuyJoker";
+                                    
+                                    // JokerZone 내의 모든 BuyJoker 태그를 가진 오브젝트 찾기 (자식 오브젝트 중에서)
+                                    var buyJokers = new List<GameObject>();
+                                    foreach (Transform child in jokerZone.transform)
+                                    {
+                                        if (child.CompareTag("BuyJoker"))
+                                        {
+                                            buyJokers.Add(child.gameObject);
+                                        }
+                                    }
+                                    
+                                    int jokerCount = buyJokers.Count;
+                                    
+                                    // BoxCollider2D의 경계 가져오기
+                                    Bounds bounds = boxCollider.bounds;
+                                    float width = bounds.size.x * 0.8f; // 80%만 사용하도록 조정 (경계선 여유 공간 확보)
+                                    float startX = bounds.center.x - (width / 2); // 중앙을 기준으로 좌우로 퍼지도록
+                                    
+                                    // 아이템이 1개일 때는 가운데, 2개 이상일 때는 균등 간격으로 배치
+                                    if (jokerCount == 1)
+                                    {
+                                        // 1개: 가운데
+                                        transform.position = new Vector3(bounds.center.x, bounds.center.y, transform.position.z);
+                                    }
+                                    else if (jokerCount > 1)
+                                    {
+                                        // 2개 이상: 균등 간격으로 배치
+                                        float spacing = width / (jokerCount - 1);
+                                        
+                                        // 모든 BuyJoker 오브젝트 재배치
+                                        for (int i = 0; i < jokerCount; i++)
+                                        {
+                                            float xPos = startX + (spacing * i);
+                                            buyJokers[i].transform.position = new Vector3(
+                                                xPos, 
+                                                bounds.center.y, 
+                                                buyJokers[i].transform.position.z);
+                                        }
+                                    }
+                                }
+                                
+                                // 드래그 비활성화
+                                enabled = false;
+                                return; // 여기서 함수 종료하여 ReturnToDragStartPosition이 실행되지 않도록 함
+                            }
+                        }
+                        else
+                        {
+                            Debug.Log($"구매실패!\n보유 금액: ${gameManager.money}\n아이템 가격: ${jokerStat.price}");
+                        }
+                    }
+                    else
+                    {
+                        Debug.Log("JokerStat 컴포넌트를 찾을 수 없습니다!");
+                    }
+                }
+                else
+                {
+                    Debug.Log("GameManager를 찾을 수 없습니다!");
+                }
+            }
+            
             // 드래그 중이었다면 드래그 시작 위치로 부드럽게 복귀
             ReturnToDragStartPosition();
         }
         isDragging = false;
         isDrag = false;
+        isInBuyZone = false; // 구매 영역 상태 초기화
         currentTag = "None";
-        PriceTag.SetActive(true);
+        if (PriceTag != null) PriceTag.SetActive(true);
         Debug.Log("드래그 종료 - 태그 초기화");
     }
     
