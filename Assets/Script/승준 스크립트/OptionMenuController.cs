@@ -5,28 +5,31 @@ using DG.Tweening;
 
 public class OptionMenuController : MonoBehaviour
 {
-    public RectTransform optionPanel;
-    public Vector2 targetPosition;
-    public float duration = 0.5f;
-
-    private Vector2 startPosition;
-
-    private void Start()
-    {
-        startPosition = new Vector2(0, -Screen.height);
-        optionPanel.anchoredPosition = startPosition;
-        optionPanel.gameObject.SetActive(false);
-    }
+    public GameObject OptionPanel;
 
     public void ShowOption()
     {
-        optionPanel.gameObject.SetActive(true);
-        optionPanel.DOAnchorPos(targetPosition, duration).SetEase(Ease.OutCubic);
-    }
+        OptionPanel.SetActive(true);
 
+        RectTransform rectTransform = OptionPanel.GetComponent<RectTransform>();
+
+        // 초기 위치를 살짝 아래로 설정
+        rectTransform.anchoredPosition = new Vector2(rectTransform.anchoredPosition.x, rectTransform.anchoredPosition.y);
+
+        // Y축으로 500만큼 부드럽게 올라오는 애니메이션
+        rectTransform.DOAnchorPosY(rectTransform.anchoredPosition.y + 500, 0.5f).SetEase(Ease.OutCubic);
+    }
     public void HideOption()
     {
-        optionPanel.DOAnchorPos(startPosition, duration).SetEase(Ease.InCubic)
-            .OnComplete(() => optionPanel.gameObject.SetActive(false));
+        RectTransform rectTransform = OptionPanel.GetComponent<RectTransform>();
+
+        rectTransform.DOAnchorPosY(rectTransform.anchoredPosition.y - 500, 0.5f)
+            .SetEase(Ease.OutCubic)
+            .OnComplete(() =>
+            {
+                OptionPanel.SetActive(false);
+            });
     }
+
+
 }

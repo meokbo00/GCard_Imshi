@@ -928,7 +928,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 9, y: 17}
+  m_AnchoredPosition: {x: 9, y: -653}
   m_SizeDelta: {x: 300.68945, y: 200.33173}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &413306358
@@ -1230,9 +1230,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc4d43079c4fbfb498015c4a63145da0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  optionPanel: {fileID: 413306357}
-  targetPosition: {x: 0, y: 0}
-  duration: 0.5
+  OptionPanel: {fileID: 413306356}
 --- !u!1 &489507266
 GameObject:
   m_ObjectHideFlags: 0
@@ -4130,7 +4128,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2090841384}
+      - m_Target: {fileID: 471065170}
         m_TargetAssemblyTypeName: OptionMenuController, Assembly-CSharp
         m_MethodName: HideOption
         m_Mode: 1
@@ -4204,9 +4202,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc4d43079c4fbfb498015c4a63145da0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  optionPanel: {fileID: 413306357}
-  targetPosition: {x: 0, y: 0}
-  duration: 0.5
+  OptionPanel: {fileID: 471065165}
 --- !u!1 &2138114968
 GameObject:
   m_ObjectHideFlags: 0
