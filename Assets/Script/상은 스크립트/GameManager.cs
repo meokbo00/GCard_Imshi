@@ -68,6 +68,11 @@ public class GameManager : MonoBehaviour
         UpdateUI();
     }
 
+    public void Reroll()
+    {
+        money -= 5;
+        UpdateUI();
+    }
     public void UpdateUI()
     {
         handCountText.text = handcount.ToString();

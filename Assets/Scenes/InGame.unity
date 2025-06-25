@@ -38,6 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
+  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -21146,6 +21147,8 @@ MonoBehaviour:
   VoucherManager: {fileID: 1320993552}
   StakeManager: {fileID: 1834186519}
   BlindManager: {fileID: 696001301}
+  DetailImages: []
+  infoAndOptions: {fileID: 959681015}
   CurrentSelect: {fileID: 115341000}
 --- !u!1 &1074399299
 GameObject:
@@ -24648,6 +24651,7 @@ GameObject:
   - component: {fileID: 1265913625}
   - component: {fileID: 1265913627}
   - component: {fileID: 1265913626}
+  - component: {fileID: 1265913628}
   m_Layer: 0
   m_Name: ItemZone
   m_TagString: Untagged
@@ -24677,7 +24681,7 @@ EdgeCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1265913624}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Density: 1
   m_Material: {fileID: 0}
   m_IncludeLayers:
@@ -24774,6 +24778,51 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!61 &1265913628
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1265913624}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0.25, y: 0.25, z: 0.25, w: 0.25}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1, y: 1}
+    newSize: {x: 3.9665165, y: 2.0513227}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 2
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 3.9827845, y: 2.05805}
+  m_EdgeRadius: 0
 --- !u!1 &1266101269
 GameObject:
   m_ObjectHideFlags: 0
@@ -35802,10 +35851,10 @@ MonoBehaviour:
   deckManager: {fileID: 106378849}
   handcount: 4
   trashcount: 4
-  money: 44
+  money: 150
   ante: 1
   round: 1
-  GoalPoint: 0
+  GoalPoint: 3000
   gsumPoint: 0
   handCountText: {fileID: 897140854}
   trashCountText: {fileID: 606402004}

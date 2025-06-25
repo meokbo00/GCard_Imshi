@@ -22,6 +22,13 @@ public class GenarateItem : MonoBehaviour
     private List<GameObject> instantiatedPrefabs = new List<GameObject>();
     private List<GameObject> usedJokerPrefabs = new List<GameObject>();
 
+    GameManager gameManager;
+
+    private void Start()
+    {
+        gameManager = FindAnyObjectByType<GameManager>();
+    }
+
     private void OnEnable()
     {
         // ShopBox가 활성화되면 프리팹 생성
@@ -260,9 +267,11 @@ public class GenarateItem : MonoBehaviour
     // ZokerSlot1과 ZokerSlot2의 프리팹을 새로운 랜덤 프리팹으로 교체 (서로 다른 프리팹이 생성됨)
     public void OnRerollBtnClick()
     {
+
+        gameManager.Reroll();
         // 이전에 사용된 조커 프리팹 저장
         List<GameObject> previousJokers = new List<GameObject>();
-        
+
         // 현재 ZokerSlot1과 ZokerSlot2의 자식 프리팹 찾기
         if (ZokerSlot1 != null && ZokerSlot1.transform.childCount > 0)
         {

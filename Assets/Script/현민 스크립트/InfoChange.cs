@@ -8,19 +8,44 @@ public class InfoChange : MonoBehaviour
     public GameObject VoucherManager;
     public GameObject StakeManager;
     public GameObject BlindManager;
+    
+    // 포커 핸드 정보 창의 세부 설명 이미지 배열 (InfoAndOptions 컴포넌트에서 가져옴)
+    public GameObject[] DetailImages;
+
+    // InfoAndOptions 컴포넌트를 가져오기 위한 변수 선언
+    public InfoAndOptions infoAndOptions;
 
     // 위치를 변경할 UI Image (RectTransform 컴포넌트 필요)
     public RectTransform CurrentSelect;
 
-    // 시작 시 PokerHandInfo를 기본값으로로 설정
     void Start()
     {
+        // InfoAndOptions 인스턴스를 통해 InfoExplain 배열 가져오기
+        if (infoAndOptions != null)
+        {
+            DetailImages = infoAndOptions.InfoExplain;
+        }
+        else
+        {
+            Debug.LogError("InfoAndOptions 인스턴스 초기화 오류");
+        }
+
+        // 시작 시 PokerHandInfo를 기본값으로 설정
         ShowPokerHandInfo(); 
     }
 
     // 블라인드 정보 창을 띄우는 메서드
     public void ShowBlindInfo()
     {
+        // 모든 Detail 이미지를 비활성화
+        foreach (GameObject detail in DetailImages)
+        {
+            if (detail != null)
+            {
+                detail.SetActive(false);
+            }
+        }
+        
         // 블라인드 정보 창을 띄우고 다른 정보 창은 비활성화
         PokerHandManager.SetActive(false);
         VoucherManager.SetActive(false);
@@ -35,6 +60,15 @@ public class InfoChange : MonoBehaviour
     // 교환한 바우처 정보 창을 띄우는 메서드
     public void ShowVoucherInfo()
     {
+        // 모든 Detail 이미지를 비활성화
+        foreach (GameObject detail in DetailImages)
+        {
+            if (detail != null)
+            {
+                detail.SetActive(false);
+            }
+        }
+        
         // 교환한 바우처 정보 창을 띄우고 다른 정보 창은 비활성화
         PokerHandManager.SetActive(false);
         BlindManager.SetActive(false);
@@ -49,6 +83,15 @@ public class InfoChange : MonoBehaviour
     // 스테이크 정보 창을 띄우는 메서드
     public void ShowStakeInfo()
     {
+        // 모든 Detail 이미지를 비활성화
+        foreach (GameObject detail in DetailImages)
+        {
+            if (detail != null)
+            {
+                detail.SetActive(false);
+            }
+        }
+        
         // 스테이크 정보 창을 띄우고 다른 정보 창은 비활성화
         PokerHandManager.SetActive(false);
         BlindManager.SetActive(false);
@@ -63,6 +106,15 @@ public class InfoChange : MonoBehaviour
     // 포커 핸드 정보 창을 띄우는 메서드
     public void ShowPokerHandInfo()
     {
+        // 모든 Detail 이미지를 비활성화
+        foreach (GameObject detail in DetailImages)
+        {
+            if (detail != null)
+            {
+                detail.SetActive(false);
+            }
+        }
+        
         // 포커 핸드 정보 창을 띄우고 다른 정보 창은 비활성화
         BlindManager.SetActive(false);
         VoucherManager.SetActive(false);
