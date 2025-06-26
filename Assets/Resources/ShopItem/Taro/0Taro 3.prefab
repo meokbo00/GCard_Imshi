@@ -52,6 +52,7 @@ GameObject:
   - component: {fileID: -5076990015208215629}
   - component: {fileID: 1820801723630193127}
   - component: {fileID: 970438966652981318}
+  - component: {fileID: -5064498049753970771}
   m_Layer: 6
   m_Name: 0Taro 3
   m_TagString: Taro
@@ -213,6 +214,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PriceTag: {fileID: 926858195368068391}
   isDrag: 0
+  isInBuyZone: 0
   currentTag: None
   returnDuration: 0.3
   returnEase: 27
@@ -224,9 +226,24 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2611013713401258576}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 63325b7e4e5aaa544acfb9978bd4ef9d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pricetag: {fileID: 8967335582798330121}
+  price: 3
+  skill: 
+--- !u!114 &-5064498049753970771
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2611013713401258576}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 065256fab5d2bd34f83cdc3041a6ca58, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   pricetag: {fileID: 8967335582798330121}

@@ -28,12 +28,38 @@ public class BuyZone : MonoBehaviour
             // 드래그 중인 오브젝트의 태그가 유효한지 확인
             if (validTags.Contains(draggingItem.tag))
             {
-                // JokerStat 컴포넌트 가져오기
+                // JokerStat, TaroStat, PlanetStat 컴포넌트 중에서 가격 정보 가져오기
+                int price = 0;
+                bool hasPrice = false;
+                
+                // JokerStat 확인
                 var jokerStat = draggingItem.GetComponent<JokerStat>();
                 if (jokerStat != null)
                 {
-                    // 가격 표시
-                    Itemcost.text = "($" + jokerStat.price.ToString() + ")";
+                    price = jokerStat.price;
+                    hasPrice = true;
+                }
+                
+                // TaroStat 확인 (JokerStat 상속이므로 else if가 아닌 if로 각각 체크)
+                var taroStat = draggingItem.GetComponent<TaroStat>();
+                if (taroStat != null)
+                {
+                    price = taroStat.price;
+                    hasPrice = true;
+                }
+                
+                // PlanetStat 확인 (JokerStat 상속이므로 else if가 아닌 if로 각각 체크)
+                var planetStat = draggingItem.GetComponent<PlanetStat>();
+                if (planetStat != null)
+                {
+                    price = planetStat.price;
+                    hasPrice = true;
+                }
+                
+                // 가격이 있는 경우에만 표시
+                if (hasPrice)
+                {
+                    Itemcost.text = "($" + price.ToString() + ")";
                     return;
                 }
             }

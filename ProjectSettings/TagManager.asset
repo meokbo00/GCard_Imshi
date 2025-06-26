@@ -14,6 +14,9 @@ TagManager:
   - Joker
   - JokerZone
   - BuyJoker
+  - ItemZone
+  - BuyTaro
+  - BuyPlanet
   layers:
   - Default
   - TransparentFX
