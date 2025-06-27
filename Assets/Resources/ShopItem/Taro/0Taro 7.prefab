@@ -52,7 +52,7 @@ GameObject:
   - component: {fileID: -5076990015208215629}
   - component: {fileID: 1820801723630193127}
   - component: {fileID: 8989641911784765583}
-  - component: {fileID: 2884895112743900990}
+  - component: {fileID: -8638649306429766755}
   m_Layer: 6
   m_Name: 0Taro 7
   m_TagString: Taro
@@ -234,7 +234,7 @@ MonoBehaviour:
   pricetag: {fileID: 8967335582798330121}
   price: 7
   skill: 
---- !u!114 &2884895112743900990
+--- !u!114 &-8638649306429766755
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

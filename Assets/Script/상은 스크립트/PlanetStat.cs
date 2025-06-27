@@ -1,8 +1,15 @@
-using TMPro;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
-public class PlanetStat : JokerStat
+public class PlanetStat : MonoBehaviour
 {
-    // JokerStat의 모든 기능을 상속받아 사용
-    // 필요시 Planet에 특화된 추가 기능을 여기에 구현
+    public TextMeshProUGUI pricetag;
+    public int price;
+    public string skill;
+    void Start()
+    {
+        pricetag.text = "$" + price.ToString();
+    }
 }

@@ -52,7 +52,7 @@ GameObject:
   - component: {fileID: -5076990015208215629}
   - component: {fileID: 7151634524933418414}
   - component: {fileID: 7968553433338330611}
-  - component: {fileID: -5015213278534912729}
+  - component: {fileID: -6624617093193977570}
   m_Layer: 6
   m_Name: 0Planet 4
   m_TagString: Planet
@@ -234,7 +234,7 @@ MonoBehaviour:
   pricetag: {fileID: 1326954627087755924}
   price: 4
   skill: 
---- !u!114 &-5015213278534912729
+--- !u!114 &-6624617093193977570
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
