@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using TMPro;
 
 public class GenarateItem : MonoBehaviour
 {
@@ -23,6 +24,8 @@ public class GenarateItem : MonoBehaviour
     private List<GameObject> usedJokerPrefabs = new List<GameObject>();
 
     GameManager gameManager;
+    public TextMeshProUGUI RerollCostText;
+    public int RerollCost = 5;
 
     private void Start()
     {
@@ -264,12 +267,19 @@ public class GenarateItem : MonoBehaviour
         instantiatedPrefabs.Clear();
     }
 
+    private void UpdateUI()
+    {
+        RerollCostText.text = "$" + RerollCost.ToString("N0");
+    }
+
     // ZokerSlot1과 ZokerSlot2의 프리팹을 새로운 랜덤 프리팹으로 교체 (서로 다른 프리팹이 생성됨)
     public void OnRerollBtnClick()
     {
         Debug.Log("리롤 버튼 클릭!");
 
-        gameManager.Reroll();
+        gameManager.Reroll(RerollCost);
+        RerollCost += 1;
+        UpdateUI();
         // 이전에 사용된 조커 프리팹 저장
         List<GameObject> previousJokers = new List<GameObject>();
 

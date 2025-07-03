@@ -68,9 +68,9 @@ public class GameManager : MonoBehaviour
         UpdateUI();
     }
 
-    public void Reroll()
+    public void Reroll(int cost)
     {
-        money -= 5;
+        money -= cost;
         UpdateUI();
     }
     public void UpdateUI()
