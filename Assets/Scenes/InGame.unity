@@ -3075,7 +3075,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: -1000
-  m_Sprite: {fileID: 21300000, guid: 38754640258e8b8449bcd46cd3aedc91, type: 3}
+  m_Sprite: {fileID: 21300000, guid: a9cb20f7851703340bc45e6f39aafe41, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -3096,7 +3096,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.85, y: 1.85, z: 1}
+  m_LocalScale: {x: 1.86, y: 1.86, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -12627,6 +12627,7 @@ GameObject:
   m_Component:
   - component: {fileID: 671178009}
   - component: {fileID: 671178010}
+  - component: {fileID: 671178011}
   m_Layer: 5
   m_Name: FailBox
   m_TagString: Untagged
@@ -12643,7 +12644,7 @@ RectTransform:
   m_GameObject: {fileID: 671178008}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.01, y: 0.01, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1608414694}
@@ -12654,7 +12655,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: -958.57, y: -547.48}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!50 &671178010
@@ -12684,6 +12685,18 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &671178011
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 671178008}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72a764836e0dc3d44abbff1c68b5e347, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &671279846
 GameObject:
   m_ObjectHideFlags: 0
@@ -19579,7 +19592,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 959364279}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 671178011}
+        m_TargetAssemblyTypeName: FailBox, Assembly-CSharp
+        m_MethodName: RetryBtnClick
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &959364279
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -31730,7 +31755,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1473364309}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 671178011}
+        m_TargetAssemblyTypeName: FailBox, Assembly-CSharp
+        m_MethodName: OnGotoMainMenuBtnClick
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1473364309
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -36514,7 +36551,7 @@ MonoBehaviour:
   trashcount: 4
   money: 222
   ante: 1
-  round: 1
+  round: 15
   GoalPoint: 3000
   gsumPoint: 0
   handCountText: {fileID: 897140854}
