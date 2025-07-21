@@ -178,6 +178,7 @@ GameObject:
   - component: {fileID: 72023760}
   - component: {fileID: 72023759}
   - component: {fileID: 72023758}
+  - component: {fileID: 72023761}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -228,7 +229,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 13
+  orthographic size: 71.99
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -259,6 +260,34 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &72023761
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 72023757}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08bf37416f5d431428069e344e0c90d0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  stars:
+  - {fileID: 1933718025}
+  - {fileID: 1458185424}
+  - {fileID: 1720279532}
+  - {fileID: 171432329}
+  - {fileID: 205859077}
+  - {fileID: 298070759}
+  - {fileID: 151825352}
+  - {fileID: 1646042385}
+  - {fileID: 183696863}
+  - {fileID: 1925610193}
+  initialSize: 5000
+  targetSize: 70
+  startDelay: 2
+  zoomDuration: 5
+  index: 4
 --- !u!1 &151825352
 GameObject:
   m_ObjectHideFlags: 0
@@ -270,6 +299,7 @@ GameObject:
   - component: {fileID: 151825353}
   - component: {fileID: 151825354}
   - component: {fileID: 151825355}
+  - component: {fileID: 151825356}
   m_Layer: 0
   m_Name: "7. \uD1A0\uC131(Saturn)"
   m_TagString: Untagged
@@ -286,7 +316,7 @@ Transform:
   m_GameObject: {fileID: 151825352}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 5.3499994, y: 0, z: 0}
+  m_LocalPosition: {x: 50.75, y: 0, z: 0}
   m_LocalScale: {x: 4.5, y: 4.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -365,6 +395,20 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &151825356
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 151825352}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39479c622f33c0b4b8197c55a1cfad15, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  orbitRadius: 60.25
+  orbitSpeed: 2.9
 --- !u!1 &171432329
 GameObject:
   m_ObjectHideFlags: 0
@@ -376,6 +420,7 @@ GameObject:
   - component: {fileID: 171432330}
   - component: {fileID: 171432332}
   - component: {fileID: 171432331}
+  - component: {fileID: 171432333}
   m_Layer: 0
   m_Name: "4. \uB2EC(Moon)"
   m_TagString: Untagged
@@ -392,7 +437,7 @@ Transform:
   m_GameObject: {fileID: 171432329}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -7.8900003, y: 0, z: 0}
+  m_LocalPosition: {x: 37.510002, y: 0, z: 0}
   m_LocalScale: {x: 0.27, y: 0.27, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -471,6 +516,21 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &171432333
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 171432329}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 047d12677e5effc4ebb16415b81139c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  target: {fileID: 1720279533}
+  orbitRadius: 1
+  orbitSpeed: 300
 --- !u!1 &183696863
 GameObject:
   m_ObjectHideFlags: 0
@@ -482,6 +542,7 @@ GameObject:
   - component: {fileID: 183696864}
   - component: {fileID: 183696865}
   - component: {fileID: 183696866}
+  - component: {fileID: 183696867}
   m_Layer: 0
   m_Name: "9. \uD574\uC655\uC131(Neptune)"
   m_TagString: Untagged
@@ -498,7 +559,7 @@ Transform:
   m_GameObject: {fileID: 183696863}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 16.509998, y: 0, z: 0}
+  m_LocalPosition: {x: 61.91, y: 0, z: 0}
   m_LocalScale: {x: 2.97, y: 2.97, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -577,6 +638,20 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &183696867
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 183696863}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39479c622f33c0b4b8197c55a1cfad15, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  orbitRadius: 112
+  orbitSpeed: 1.65
 --- !u!1 &205859077
 GameObject:
   m_ObjectHideFlags: 0
@@ -588,6 +663,7 @@ GameObject:
   - component: {fileID: 205859078}
   - component: {fileID: 205859079}
   - component: {fileID: 205859080}
+  - component: {fileID: 205859081}
   m_Layer: 0
   m_Name: "5. \uD654\uC131(Mars) "
   m_TagString: Untagged
@@ -604,7 +680,7 @@ Transform:
   m_GameObject: {fileID: 205859077}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -6.8100004, y: 0, z: 0}
+  m_LocalPosition: {x: 38.59, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -683,6 +759,20 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &205859081
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 205859077}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39479c622f33c0b4b8197c55a1cfad15, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  orbitRadius: 42.4
+  orbitSpeed: 7.5
 --- !u!1 &298070759
 GameObject:
   m_ObjectHideFlags: 0
@@ -694,6 +784,7 @@ GameObject:
   - component: {fileID: 298070760}
   - component: {fileID: 298070761}
   - component: {fileID: 298070762}
+  - component: {fileID: 298070763}
   m_Layer: 0
   m_Name: "6. \uBAA9\uC131(Jupiter) "
   m_TagString: Untagged
@@ -710,7 +801,7 @@ Transform:
   m_GameObject: {fileID: 298070759}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -3.2000003, y: 0, z: 0}
+  m_LocalPosition: {x: 42.2, y: 0, z: 0}
   m_LocalScale: {x: 4.06, y: 4.06, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -789,6 +880,20 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &298070763
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 298070759}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39479c622f33c0b4b8197c55a1cfad15, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  orbitRadius: 49.18
+  orbitSpeed: 4
 --- !u!1 &300385435
 GameObject:
   m_ObjectHideFlags: 0
@@ -1548,6 +1653,7 @@ GameObject:
   - component: {fileID: 1458185425}
   - component: {fileID: 1458185427}
   - component: {fileID: 1458185426}
+  - component: {fileID: 1458185428}
   m_Layer: 0
   m_Name: "2. \uAE08\uC131(Venus)"
   m_TagString: Untagged
@@ -1564,7 +1670,7 @@ Transform:
   m_GameObject: {fileID: 1458185424}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -9.79, y: 0, z: 0}
+  m_LocalPosition: {x: 35.61, y: 0, z: 0}
   m_LocalScale: {x: 0.95, y: 0.95, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1643,6 +1749,20 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1458185428
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1458185424}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39479c622f33c0b4b8197c55a1cfad15, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  orbitRadius: 38.2
+  orbitSpeed: 10.5
 --- !u!1 &1520207626
 GameObject:
   m_ObjectHideFlags: 0
@@ -1751,6 +1871,7 @@ GameObject:
   - component: {fileID: 1646042386}
   - component: {fileID: 1646042387}
   - component: {fileID: 1646042388}
+  - component: {fileID: 1646042389}
   m_Layer: 0
   m_Name: "8. \uCC9C\uC655\uC131(Uranus)"
   m_TagString: Untagged
@@ -1767,7 +1888,7 @@ Transform:
   m_GameObject: {fileID: 1646042385}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 12.509999, y: 0, z: 0}
+  m_LocalPosition: {x: 57.91, y: 0, z: 0}
   m_LocalScale: {x: 3.07, y: 3.07, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1846,6 +1967,20 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &1646042389
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1646042385}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39479c622f33c0b4b8197c55a1cfad15, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  orbitRadius: 84.56
+  orbitSpeed: 2.05
 --- !u!1 &1654910904
 GameObject:
   m_ObjectHideFlags: 0
@@ -1995,6 +2130,7 @@ GameObject:
   - component: {fileID: 1720279533}
   - component: {fileID: 1720279535}
   - component: {fileID: 1720279534}
+  - component: {fileID: 1720279536}
   m_Layer: 0
   m_Name: "3. \uC9C0\uAD6C(Earth)"
   m_TagString: Untagged
@@ -2011,7 +2147,7 @@ Transform:
   m_GameObject: {fileID: 1720279532}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -8.47, y: 0, z: 0}
+  m_LocalPosition: {x: 36.93, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2090,6 +2226,20 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1720279536
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1720279532}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39479c622f33c0b4b8197c55a1cfad15, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  orbitRadius: 40.2
+  orbitSpeed: 9
 --- !u!1 &1840014330
 GameObject:
   m_ObjectHideFlags: 0
@@ -2284,7 +2434,7 @@ Transform:
   m_GameObject: {fileID: 1925610193}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -50, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 25.41, y: 25.41, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2419,6 +2569,7 @@ GameObject:
   - component: {fileID: 1933718026}
   - component: {fileID: 1933718028}
   - component: {fileID: 1933718027}
+  - component: {fileID: 1933718029}
   m_Layer: 0
   m_Name: "1. \uC218\uC131(Mercury)"
   m_TagString: Untagged
@@ -2435,7 +2586,7 @@ Transform:
   m_GameObject: {fileID: 1933718025}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -11.1, y: 0, z: 0}
+  m_LocalPosition: {x: 34.3, y: 0, z: 0}
   m_LocalScale: {x: 0.9, y: 0.9, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2514,6 +2665,20 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1933718029
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1933718025}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39479c622f33c0b4b8197c55a1cfad15, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  orbitRadius: 37
+  orbitSpeed: 15
 --- !u!1 &2096359178
 GameObject:
   m_ObjectHideFlags: 0

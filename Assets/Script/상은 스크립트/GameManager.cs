@@ -24,6 +24,22 @@ public class GameManager : MonoBehaviour
 
     private int[] goalPoints = { 10, 450, 600, 800, 1200, 1600, 2000, 3000, 4000, 5000, 7500, 10000, 11000, 16500, 22000, 20000, 27500, 35000, 35000, 52500, 70000, 50000, 75000, 100000, 110000, 165000, 220000, 560000, 840000, 2240000, 7200000, 10800000, 14400000, 300000000, 450000000, 600000000 };
 
+    private void Awake()
+    {
+        // 싱글톤 패턴 구현
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            // 이미 인스턴스가 있다면 새로 생성된 인스턴스 파괴
+            Destroy(gameObject);
+            return;
+        }
+    }
+
     private void Start()
     {
         UpdateGoalPoint();
@@ -68,9 +84,9 @@ public class GameManager : MonoBehaviour
         UpdateUI();
     }
 
-    public void Reroll(int cost)
+    public void Reroll(int RerollCost)
     {
-        money -= cost;
+        money -= RerollCost;
         UpdateUI();
     }
     public void UpdateUI()
