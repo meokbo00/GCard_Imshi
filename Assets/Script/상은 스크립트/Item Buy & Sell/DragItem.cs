@@ -227,6 +227,7 @@ public class DragItem : MonoBehaviour
         if (isInBuyZone)
         {
             GameManager gameManager = FindObjectOfType<GameManager>();
+            GameSaveData gameSaveData = FindObjectOfType<GameSaveData>();
             
             // Joker, Taro, Planet 태그별로 처리
             if (gameObject.CompareTag("Joker") || gameObject.CompareTag("Taro") || gameObject.CompareTag("Planet"))
@@ -289,7 +290,7 @@ public class DragItem : MonoBehaviour
                 }
                 
                 // 아이템 구매 처리
-                if (gameManager != null && price > 0 && gameManager.money - price >= 0)
+                if (gameManager != null && price > 0 && gameManager.playerData.money - price >= 0)
                 {
                     gameManager.BuyItem(price);
                     

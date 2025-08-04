@@ -14,9 +14,11 @@ public class OverOrClear : MonoBehaviour
     
     HandRanking handRanking;
     GameManager gameManager;
+    GameSaveData gameSaveData;
     CashOutManager cashOutManager;
     void Start()
     {
+        gameSaveData = FindObjectOfType<GameSaveData>();
         cashOutManager = FindObjectOfType<CashOutManager>();
         gameManager = FindObjectOfType<GameManager>();
         handRanking = FindObjectOfType<HandRanking>();
@@ -26,12 +28,12 @@ public class OverOrClear : MonoBehaviour
     public void IsClearOrFail()
     {
         Debug.Log("게임 클리어/오버 체크");
-        if (handRanking.sumPoint >= gameManager.GoalPoint)
+        if (handRanking.sumPoint >= gameManager.goalPoints[gameManager.playerData.round - 1])
         {
             Debug.Log("스테이지 클리어!");
             StartCoroutine(HideUIElementsAndShowBox(CashOutBox));
         }
-        else if (gameManager.handcount == 0 && (handRanking.sumPoint < gameManager.GoalPoint))
+        else if (gameManager.playerData.handcount == 0 && (handRanking.sumPoint < gameManager.goalPoints[gameManager.playerData.round - 1]))
         {
             Debug.Log("스테이지 오버!");
             StartCoroutine(HideUIElementsAndShowBox(FailBox));
@@ -143,7 +145,7 @@ public class OverOrClear : MonoBehaviour
     // 머니박스와 실패박스에 달린 버튼을 눌렀을 때 실행되는 메서드
     public void OnCashOutButton()
     {
-        gameManager.money += cashOutManager.totalmoney;
+        gameManager.playerData.money += cashOutManager.totalmoney;
         gameManager.UpdateUI();
         StartCoroutine(HideCashOutAndShowShop());
     }

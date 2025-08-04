@@ -19,12 +19,14 @@ public class HandRanking : MonoBehaviour
 
     private bool isHandPlaying = false; // HandPlay 중인지 여부를 체크하는 플래그
 
+    private GameSaveData gameSaveData;
     private GameManager gameManager;
 
     void Start()
     {
+        gameManager = FindObjectOfType<GameManager>();
+        gameSaveData = FindAnyObjectByType<GameSaveData>();
         deckManager = FindObjectOfType<DeckManager>();
-        gameManager = FindObjectOfType<GameManager>(); // GameManager 인스턴스 참조
         sumPointText.text = "0"; // 초기값 설정
     }
 

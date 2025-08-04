@@ -30,6 +30,7 @@ public class CashOutManager : MonoBehaviour
     public GameObject InterestM;
     public GameObject JokerSkillM;
     
+    GameSaveData gameSaveData;
     GameManager gameManager;
 
     [Header("이자 관련 설정")]
@@ -50,8 +51,9 @@ public class CashOutManager : MonoBehaviour
 
     void Start()
     {
+        gameManager = FindObjectOfType<GameManager>();
         CashOutBtn.SetActive(false);
-        gameManager = FindAnyObjectByType<GameManager>();
+        gameSaveData = FindAnyObjectByType<GameSaveData>();
     }
 
     // 돈 아이콘을 생성하는 코루틴
@@ -237,14 +239,14 @@ public class CashOutManager : MonoBehaviour
     {
         // money를 단위로 나누어 interest 계산 (5당 1 증가, 최대 interestMaxLimit)
         interestmoney = Mathf.Min(
-            gameManager.money / interestIncrementUnit,  // money를 단위로 나눈 값
+            gameManager.playerData.money / interestIncrementUnit,  // money를 단위로 나눈 값
             interestMaxLimit                            // 최대값 제한
         );
         
         // 0 이하인 경우 0으로 설정 (옵션: 필요에 따라 제거 가능)
         interestmoney = Mathf.Max(0, interestmoney);
 
-        remainhand = gameManager.handcount;
+        remainhand = gameManager.currentHandCount;
         totalmoney = clearreward + remainhand + interestmoney + isjokerskill;
         BtnMoneyTxt.GetComponent<TextMeshProUGUI>().text = "$" + totalmoney.ToString();
     }

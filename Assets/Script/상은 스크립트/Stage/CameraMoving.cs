@@ -3,6 +3,7 @@ using DG.Tweening;
 
 public class CameraMoving : MonoBehaviour
 {
+    public GameObject PlanetExplainBox;
     public GameObject[] stars;
 
     [Header("맨 처음 카메라와 확대할 사이즈")]
@@ -227,28 +228,9 @@ public class CameraMoving : MonoBehaviour
         
         // 이동이 완료된 후 콜백 실행
         onComplete?.Invoke();
+        PlanetExplainBox.SetActive(true);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    
     private void OnDestroy()
     {
         zoomTween?.Kill();

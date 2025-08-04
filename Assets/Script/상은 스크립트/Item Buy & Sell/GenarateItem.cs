@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class GenarateItem : MonoBehaviour
 {
@@ -271,6 +272,16 @@ public class GenarateItem : MonoBehaviour
     {
         RerollCostText.text = "$" + RerollCost.ToString("N0");
     }
+
+    public void OnNextBtnClick()
+    {
+        gameManager.PlusRound();
+        Debug.Log("엔티 : " + gameManager.playerData.ante + "\n");
+        Debug.Log("라운드 : " + gameManager.playerData.round + "\n");
+        Debug.Log("보유한 돈 : $" + gameManager.playerData.money.ToString("N0") + "\n");
+        SceneManager.LoadScene("Stage");
+    }
+    
 
     // ZokerSlot1과 ZokerSlot2의 프리팹을 새로운 랜덤 프리팹으로 교체 (서로 다른 프리팹이 생성됨)
     public void OnRerollBtnClick()
