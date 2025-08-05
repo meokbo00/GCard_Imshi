@@ -31,11 +31,37 @@ public class CameraMoving : MonoBehaviour
         mainCamera = Camera.main;
     }
 
+    private PlayerData playerData;
+    private SaveManager saveManager;
+
     private void Start()
     {
-        //InitializeCamera();
-        //StartZoomSequence();
-        MovingStarToStar(index, index + 1);
+        // SaveManager에서 데이터 로드
+        saveManager = FindObjectOfType<SaveManager>();
+        if (saveManager != null)
+        {
+            playerData = saveManager.Load();
+
+            Debug.Log("playerData.round : " + playerData.round);
+            
+            // round가 1일 때만 카메라 초기화 및 줌 시퀀스 실행
+            if (playerData != null && playerData.round == 1)
+            {
+                InitializeCamera();
+                StartZoomSequence();
+            }
+            else
+            {
+                // round가 1이 아닐 경우 기본 카메라 설정
+                mainCamera.orthographic = true;
+                mainCamera.orthographicSize = targetSize;
+            }
+        }
+        
+        if(playerData.round >= 2)
+        {
+            MovingStarToStar(playerData.round - 1, playerData.round);
+        }
     }
 
     // 게임 맨 처음 시작시 시작할 메서드. 맨 끝에서 줌인한다

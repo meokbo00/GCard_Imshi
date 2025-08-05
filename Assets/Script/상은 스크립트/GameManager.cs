@@ -17,7 +17,7 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI AnteText;
     public TextMeshProUGUI RoundText;
     public TextMeshProUGUI GoalPointText;
-    public int[] goalPoints = { 10, 450, 600, 800, 1200, 1600, 2000, 3000, 4000, 5000, 7500, 10000, 11000, 16500, 22000, 20000, 27500, 35000, 35000, 52500, 70000, 50000, 75000, 100000, 110000, 165000, 220000, 560000, 840000, 2240000, 7200000, 10800000, 14400000, 300000000, 450000000, 600000000 };
+    public int[] goalPoints = { 10, 20, 30, 800, 1200, 1600, 2000, 3000, 4000, 5000, 7500, 10000, 11000, 16500, 22000, 20000, 27500, 35000, 35000, 52500, 70000, 50000, 75000, 100000, 110000, 165000, 220000, 560000, 840000, 2240000, 7200000, 10800000, 14400000, 300000000, 450000000, 600000000 };
 
     public int currentTrashCount;
     public int currentHandCount;
@@ -26,9 +26,18 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+
+        Debug.Log("goalPoint[0] : " + goalPoints[0]);
+        Debug.Log("goalPoint[1] : " + goalPoints[1]);
+        Debug.Log("goalPoint[2] : " + goalPoints[2]);
+
         gameSaveData = FindAnyObjectByType<GameSaveData>();
         saveManager = FindAnyObjectByType<SaveManager>();
+
+        // 데이터 리셋은 여기서!!!!
         //ResetData();
+
+
         playerData = saveManager.Load();
         currentTrashCount = playerData.trashcount;
         currentHandCount = playerData.handcount;
@@ -99,6 +108,10 @@ public class GameManager : MonoBehaviour
     public void PlusRound()
     {
         playerData.round += 1;
+        if(playerData.round % 3 == 1)
+        {
+            playerData.ante += 1;
+        }
         saveManager.Save(playerData);
         UpdateUI();
     }

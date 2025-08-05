@@ -11,24 +11,27 @@ public class Btn : MonoBehaviour
     public Button PlayBtn2;
     public Button PlayBtn3;
 
-    GameSaveData gameSaveData;
+    private PlayerData playerData;
+    private SaveManager saveManager;
 
     void Start()
     {
-        gameSaveData = FindAnyObjectByType<GameSaveData>();
-        if(gameSaveData.round % 3 == 1)
+        saveManager = FindAnyObjectByType<SaveManager>();
+        playerData = saveManager.Load();
+        
+        if(playerData.round % 3 == 1)
         {
             SetButtonColor(PlayBtn1, true);
             SetButtonColor(PlayBtn2, false);
             SetButtonColor(PlayBtn3, false);
         }
-        else if(gameSaveData.round % 3 == 2)
+        else if(playerData.round % 3 == 2)
         {
             SetButtonColor(PlayBtn1, false);
             SetButtonColor(PlayBtn2, true);
             SetButtonColor(PlayBtn3, false);
         }
-        else if(gameSaveData.round % 3 == 0)
+        else if(playerData.round % 3 == 0)
         {
             SetButtonColor(PlayBtn1, false);
             SetButtonColor(PlayBtn2, false);
