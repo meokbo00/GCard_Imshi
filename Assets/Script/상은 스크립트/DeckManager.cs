@@ -9,6 +9,7 @@ public class DeckManager : MonoBehaviour
     public GameObject cardPrefab;
     public GameObject playZone; // PlayZone 오브젝트 참조 추가
     OverOrClear overorclear;
+    public GameObject JokerZone;
 
     public Canvas canvas; // UI 캔버스 참조 추가
     public HandRanking handRanking; // HandRanking 참조 추가
@@ -270,6 +271,30 @@ public class DeckManager : MonoBehaviour
         // 선택된 카드가 없으면 아무 동작도 하지 않음
         if (selectedCards.Count == 0) return;
 
+        // JokerZone 하위의 자식 오브젝트 개수 확인
+        int jokerCount = JokerZone != null ? JokerZone.transform.childCount : 0;
+        
+        // 조커 보유 여부에 따른 로그 출력
+        if (jokerCount > 0)
+        {
+            Debug.Log($"현재 조커 {jokerCount}개 보유중");
+            
+            // 각 조커의 playTiming 로그 출력
+            for (int i = 0; i < jokerCount; i++)
+            {
+                Transform joker = JokerZone.transform.GetChild(i);
+                JokerStat jokerStat = joker.GetComponent<JokerStat>();
+                if (jokerStat != null)
+                {
+                    Debug.Log($"- {joker.name}의 발동 타이밍: {jokerStat.GetTimingAsString()}");
+                }
+            }
+        }
+        else
+        {
+            Debug.Log("현재 조커 미보유중");
+        }
+
         // 선택된 카드들을 정렬 (x 좌표 기준으로)
         List<Card> sortedCards = new List<Card>(selectedCards);
         sortedCards.Sort((a, b) => a.transform.position.x.CompareTo(b.transform.position.x));
@@ -311,6 +336,7 @@ public class DeckManager : MonoBehaviour
         }
 
         // 족보를 구성하는 카드들만 포인트 텍스트 표시
+        int cardIndex = 1;
         foreach (Card card in sortedCards)
         {
             if (card != null)
@@ -335,11 +361,34 @@ public class DeckManager : MonoBehaviour
 
                     pointText.text = "+" + point.ToString();
                     pointText.gameObject.SetActive(true);
+                    /////////////////////////////////////////////////////////
 
                     // 포인트 값만큼 블루칩 증가
                     if (handRanking != null)
                     {
+                        Debug.Log($"{cardIndex}번째 카드 핸드플레이");
+                        Debug.Log($"{card.suit} 모양 {card.rank}에 {point}만큼 블루칩 증가");
+                        cardIndex++;
                         handRanking.AddBlueChipValue(point);
+
+                        // 핸드플레이 시작하자마자 핸드플레이전 발동되는 조커 있는지 체크
+
+                        
+
+                        // 블루칩을 얻고 나서 조커 아이템 발동되어야 함!!!! 이게 순서
+                        JokerStat[] jokerStats = FindObjectsOfType<JokerStat>();
+                        UseJokerSkill useJokerSkill = FindObjectOfType<UseJokerSkill>();
+                        foreach (JokerStat jokerStat in jokerStats)
+                        {
+                            //jokerStat.LogCardPointAddition(card, point);
+                            jokerStat.HeartR4(card, point); // 지금은 임시로 하트 발동을 걸어뒀지만 이제부터 현재 활성화 되어있는 조커의 이름을 따와 메서드를 순서대로 발동시키면 됨!!!!
+                            if (jokerStat.playTiming == JokerStat.PlayTiming.After_CardPlay)
+                            {
+                                useJokerSkill.AfterCardPlayJokerSkill();
+                            }
+                        }
+
+                        // 핸드플레이가 다 끝나고 나서 발동되는 조커 있는지 체크!
                     }
 
                     // 0.2초 대기 후 텍스트 비활성화
@@ -348,7 +397,7 @@ public class DeckManager : MonoBehaviour
                 }
             }
         }
-
+//////////////////////////////////////////////////////////////////////////////////////////////////
         // 모든 포인트 텍스트 표시가 끝난 후 오른쪽으로 이동 및 새 카드 생성
         yield return StartCoroutine(MoveCardsRightCoroutine());
     }

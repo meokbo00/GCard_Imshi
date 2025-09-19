@@ -11,8 +11,6 @@ public class SellZone : MonoBehaviour
     private readonly string[] validTags = 
     {
         "BuyJoker",
-        "BuyPlanet",
-        "BuyTaro"
     };
 
     private void Update()
@@ -26,7 +24,7 @@ public class SellZone : MonoBehaviour
             // 드래그 중인 오브젝트의 태그가 유효한지 확인
             if (validTags.Contains(draggingItem.tag))
             {
-                // JokerStat, TaroStat, PlanetStat 컴포넌트 중에서 가격 정보 가져오기
+                // JokerStat 컴포넌트 중에서 가격 정보 가져오기
                 int price = 0;
                 bool hasPrice = false;
                 
@@ -35,22 +33,6 @@ public class SellZone : MonoBehaviour
                 if (jokerStat != null)
                 {
                     price = jokerStat.price;
-                    hasPrice = true;
-                }
-                
-                // TaroStat 확인
-                var taroStat = draggingItem.GetComponent<TaroStat>();
-                if (taroStat != null)
-                {
-                    price = taroStat.price;
-                    hasPrice = true;
-                }
-                
-                // PlanetStat 확인
-                var planetStat = draggingItem.GetComponent<PlanetStat>();
-                if (planetStat != null)
-                {
-                    price = planetStat.price;
                     hasPrice = true;
                 }
                 
@@ -114,24 +96,12 @@ public class SellZone : MonoBehaviour
         int price = 0;
         bool hasPrice = false;
         
-        // JokerStat, TaroStat, PlanetStat 중에서 가격 정보 가져오기
+        // JokerStat 중에서 가격 정보 가져오기
         var jokerStat = soldItem.GetComponent<JokerStat>();
-        var taroStat = soldItem.GetComponent<TaroStat>();
-        var planetStat = soldItem.GetComponent<PlanetStat>();
         
         if (jokerStat != null)
         {
             price = jokerStat.price;
-            hasPrice = true;
-        }
-        else if (taroStat != null)
-        {
-            price = taroStat.price;
-            hasPrice = true;
-        }
-        else if (planetStat != null)
-        {
-            price = planetStat.price;
             hasPrice = true;
         }
         
@@ -150,6 +120,13 @@ public class SellZone : MonoBehaviour
             {
                 Debug.Log($"판매성공! 판매가격: {sellPrice}");
                 gameManager.SellItem(sellPrice);
+            }
+            
+            // 저장된 데이터에서 아이템 제거
+            var itemData = FindObjectOfType<ItemData>();
+            if (itemData != null)
+            {
+                itemData.RemoveItemFromSavedData(soldItem);
             }
             
             // 아이템 제거

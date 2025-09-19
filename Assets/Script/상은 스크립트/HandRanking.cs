@@ -324,6 +324,15 @@ public class HandRanking : MonoBehaviour
             blueChipText.text = BlueChip.ToString();
         }
     }
+    public void AddRedChipValue(float value)
+    {
+        RedChip += value;
+        // UI 업데이트
+        if (redChipText != null)
+        {
+            redChipText.text = RedChip.ToString();
+        }
+    }
 
     public void UpdateSumPoint()
     {

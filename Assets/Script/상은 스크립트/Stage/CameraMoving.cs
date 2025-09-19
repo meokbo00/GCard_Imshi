@@ -42,10 +42,11 @@ public class CameraMoving : MonoBehaviour
         {
             playerData = saveManager.Load();
 
+            Debug.Log("playerData.ante : " + playerData.ante);
             Debug.Log("playerData.round : " + playerData.round);
             
             // round가 1일 때만 카메라 초기화 및 줌 시퀀스 실행
-            if (playerData != null && playerData.round == 1)
+            if (playerData != null && playerData.round == 1 && playerData.ante == 1)
             {
                 InitializeCamera();
                 StartZoomSequence();
@@ -58,9 +59,16 @@ public class CameraMoving : MonoBehaviour
             }
         }
         
-        if(playerData.round >= 2)
+        if(playerData.ante >= 1 && playerData.round > 1)
         {
-            MovingStarToStar(playerData.round - 1, playerData.round);
+            if(playerData.round % 3 == 2 || playerData.round % 3 == 0)
+            {
+                FollowStarAt(playerData.ante - 1);
+            }
+            else if(playerData.round % 3 == 1)
+            {
+                MovingStarToStar(playerData.ante - 2, playerData.ante - 1);
+            }
         }
     }
 
@@ -86,7 +94,7 @@ public class CameraMoving : MonoBehaviour
                 Debug.Log("Camera zoom completed!");
                 // 줌 인이 완료된 후 5초 대기 후에 별을 따라가기 시작
                 DOVirtual.DelayedCall(1f, () => {
-                    FollowStarAt(index);
+                    FollowStarAt(0);
                 });
             });
         });

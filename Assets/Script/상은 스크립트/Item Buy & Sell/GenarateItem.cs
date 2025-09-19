@@ -16,10 +16,12 @@ public class GenarateItem : MonoBehaviour
 
     [Header("프리팹 배열")]
     public GameObject[] ZokerPrefabs;
-    public GameObject[] TaroPrefabs;
-    public GameObject[] PlanetPrefabs;
     public GameObject[] ItemPackPrefabs;
     public GameObject[] VoucherPrefabs;
+    
+    // 더 이상 사용하지 않는 프리팹 배열들
+    private GameObject[] TaroPrefabs = new GameObject[0];
+    private GameObject[] PlanetPrefabs = new GameObject[0];
 
     private List<GameObject> instantiatedPrefabs = new List<GameObject>();
     private List<GameObject> usedJokerPrefabs = new List<GameObject>();
@@ -52,36 +54,11 @@ public class GenarateItem : MonoBehaviour
     
     private GameObject GetRandomJokerTypePrefab(bool isSecondSlot = false)
     {
-        // 랜덤 값 생성 (0~99)
-        float randomValue = Random.Range(0f, 100f);
-        
         // 사용 가능한 프리팹 목록
         List<GameObject> availablePrefabs = new List<GameObject>();
         
-        // 확률에 따라 프리팹 배열 선택
-        // 조커: 80% (0~79.999...)
-        // 타로: 10% (80~89.999...)
-        // 행성: 10% (90~99.999...)
-        
-        GameObject[] targetPrefabs = null;
-        
-        if (randomValue < 80f && ZokerPrefabs.Length > 0)
-        {
-            targetPrefabs = ZokerPrefabs;
-        }
-        else if (randomValue < 90f && TaroPrefabs.Length > 0)
-        {
-            targetPrefabs = TaroPrefabs;
-        }
-        else if (PlanetPrefabs.Length > 0)
-        {
-            targetPrefabs = PlanetPrefabs;
-        }
-        else
-        {
-            // 기본적으로 조커 프리팹 사용
-            targetPrefabs = ZokerPrefabs;
-        }
+        // 항상 조커 프리팹 사용
+        GameObject[] targetPrefabs = ZokerPrefabs;
         
         if (targetPrefabs == null || targetPrefabs.Length == 0)
             return null;
@@ -317,26 +294,11 @@ public class GenarateItem : MonoBehaviour
             }
         }
         
-        // 확률에 따라 프리팹 배열 선택 (조커 80%, 타로 10%, 행성 10%)
-        GameObject[] GetRandomPrefabArray()
-        {
-            float randomValue = Random.Range(0f, 100f);
-            Debug.Log("randomValue : " + randomValue);
-            if (randomValue < 80f && ZokerPrefabs.Length > 0)
-                return ZokerPrefabs;
-            else if (randomValue < 90f && TaroPrefabs.Length > 0)
-                return TaroPrefabs;
-            else if (PlanetPrefabs.Length > 0)
-                return PlanetPrefabs;
-            else
-                return ZokerPrefabs; // 기본값으로 조커 프리팹 반환
-        }
-        
         // 첫 번째 슬롯에 새로운 프리팹 생성
         if (ZokerSlot1 != null)
         {
-            // 확률에 따라 프리팹 배열 선택
-            GameObject[] targetPrefabs = GetRandomPrefabArray();
+            // 항상 조커 프리팹 사용
+            GameObject[] targetPrefabs = ZokerPrefabs;
             if (targetPrefabs != null && targetPrefabs.Length > 0)
             {
                 // 사용 가능한 프리팹 필터링
@@ -376,8 +338,8 @@ public class GenarateItem : MonoBehaviour
         // 두 번째 슬롯에 새로운 프리팹 생성 (첫 번째 슬롯과 다른 프리팹이어야 함)
         if (ZokerSlot2 != null)
         {
-            // 확률에 따라 프리팹 배열 선택
-            GameObject[] targetPrefabs = GetRandomPrefabArray();
+            // 항상 조커 프리팹 사용
+            GameObject[] targetPrefabs = ZokerPrefabs;
             if (targetPrefabs != null && targetPrefabs.Length > 0)
             {
                 // 사용 가능한 프리팹 필터링

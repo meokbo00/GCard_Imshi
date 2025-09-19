@@ -7,6 +7,6 @@ public class SceneManagement : MonoBehaviour
 {
     public void Change() 
     {
-        SceneManager.LoadScene("InGame");
+        SceneManager.LoadScene("Stage");
     }
 }

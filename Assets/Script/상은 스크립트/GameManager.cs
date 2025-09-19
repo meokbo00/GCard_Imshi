@@ -26,17 +26,17 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-
-        Debug.Log("goalPoint[0] : " + goalPoints[0]);
-        Debug.Log("goalPoint[1] : " + goalPoints[1]);
-        Debug.Log("goalPoint[2] : " + goalPoints[2]);
-
         gameSaveData = FindAnyObjectByType<GameSaveData>();
         saveManager = FindAnyObjectByType<SaveManager>();
 
         // 데이터 리셋은 여기서!!!!
         //ResetData();
 
+        var itemData = FindObjectOfType<ItemData>();
+        if (itemData != null)
+        {
+            itemData.LoadAndPlaceJokerItems();
+        }
 
         playerData = saveManager.Load();
         currentTrashCount = playerData.trashcount;
@@ -47,7 +47,7 @@ public class GameManager : MonoBehaviour
     public void ResetData()
     {
         playerData = new PlayerData();
-        playerData.money = 200;
+        playerData.money = 500;
         playerData.handcount = 4;
         playerData.trashcount = 4;
         playerData.round = 1;
@@ -67,6 +67,7 @@ public class GameManager : MonoBehaviour
 
     public void OnTrashButtonClick()
     {
+        Debug.Log("버리기 메서드 실행");
         if (currentTrashCount <= 0 || deckManager.GetSelectedCards().Count == 0) return;
         currentTrashCount -= 1;
         UpdateUI();
@@ -75,6 +76,9 @@ public class GameManager : MonoBehaviour
 
     public void OnHandPlayButtonClick()
     {
+        UseJokerSkill useJokerSkill = FindObjectOfType<UseJokerSkill>();
+        useJokerSkill.SetJokerSlot();
+        Debug.Log("핸드플레이 메서드 실행");
         if (currentHandCount <= 0 || deckManager.GetSelectedCards().Count == 0) return;
         currentHandCount -= 1;
         UpdateUI();

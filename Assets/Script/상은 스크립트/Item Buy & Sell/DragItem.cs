@@ -21,7 +21,7 @@ public class DragItem : MonoBehaviour
     public bool isInBuyZone = false;
     public bool isInSellZone = false; // 판매 영역 안에 있는지 여부
     public string currentTag = "None";
-    private bool isPurchased = false; // 구매 여부 추적
+    public bool isPurchased = false; // 구매 여부 추적
 
     [Header("Tween Settings")]
     [SerializeField] private float returnDuration = 0.3f; // 복귀 애니메이션 지속 시간
@@ -35,8 +35,18 @@ public class DragItem : MonoBehaviour
 
     private void OnMouseDown()
     {
-        returnTween?.Kill();
+        // JokerZone 레이어를 무시하도록 설정
+        int jokerZoneLayer = LayerMask.NameToLayer("JokerZone");
+        int originalLayer = gameObject.layer;
+    
+        if (jokerZoneLayer != -1)
+        {
+            // JokerZone 레이어를 잠시 무시
+            Physics2D.IgnoreLayerCollision(jokerZoneLayer, originalLayer, true);
+        }
+
         
+        returnTween?.Kill();
         dragStartWorldPosition = transform.position;
         dragStartPosition = Input.mousePosition;
         isDragging = false;
@@ -293,9 +303,9 @@ public class DragItem : MonoBehaviour
                 if (gameManager != null && price > 0 && gameManager.playerData.money - price >= 0)
                 {
                     gameManager.BuyItem(price);
-                    
+                        
                     // 아이템 타입에 따른 구매 성공 메시지 출력
-                    Debug.Log(useItemZone ? "타로 혹은 행성 구매 성공!" : "조커 구매 성공!");
+                    string itemType = useItemZone ? (gameObject.CompareTag("Taro") ? "타로" : "행성") : "조커";
                     
                     // 구매 성공 시 해당 Zone으로 이동
                     if (targetZone != null)
@@ -345,6 +355,10 @@ public class DragItem : MonoBehaviour
                                     {
                                         spriteRenderer.sortingOrder = -1; // 첫 번째 아이템은 항상 -1
                                     }
+                                    
+                                    // 구매 로그 메시지 출력 (Taro/Planet)
+                                    int slotNum = 3; // 1개일 때는 항상 3번 슬롯(가운데)
+                                    //Debug.Log($"{itemType} 아이템 구매 성공! - 프리팹 이름: {gameObject.name}, 배정된 슬롯: {slotNum}번");
                                     
                                     // 부드럽게 이동 후 구매 확정 처리
                                     transform.DOMove(targetPos, 0.3f).SetEase(Ease.OutBack).OnComplete(() => {
@@ -440,6 +454,46 @@ public class DragItem : MonoBehaviour
                         }
                         
                         // 구매 확정 처리
+                        int slotNumber = 1; // 기본값 (1개일 때)
+                        
+                        // 존에서의 슬롯 위치 계산
+                        if (targetZone != null)
+                        {
+                            string[] tagsToCheck;
+                            
+                            if (!useItemZone)
+                            {
+                                // 조커 아이템인 경우
+                                tagsToCheck = new string[] { "BuyJoker" };
+                            }
+                            else
+                            {
+                                // 타로 또는 행성 아이템인 경우
+                                tagsToCheck = new string[] { "BuyTaro", "BuyPlanet" };
+                            }
+                            
+                            // 해당 태그들을 가진 모든 오브젝트 찾기
+                            var itemsInZone = new List<GameObject>();
+                            foreach (var tag in tagsToCheck)
+                            {
+                                itemsInZone.AddRange(GameObject.FindGameObjectsWithTag(tag));
+                            }
+                            
+                            if (itemsInZone.Count > 1)
+                            {
+                                // x 좌표를 기준으로 정렬
+                                var sortedItems = itemsInZone.OrderBy(item => item.transform.position.x).ToList();
+                                int index = sortedItems.FindIndex(item => item == gameObject);
+                                if (index >= 0)
+                                {
+                                    slotNumber = index + 1; // 1-based 인덱스
+                                }
+                            }
+                        }
+                        
+                        Debug.Log($"{itemType} 아이템 구매 성공! - 프리팹 이름: {gameObject.name}, 배정된 슬롯: {slotNumber}번");
+                        ItemData itemData = FindObjectOfType<ItemData>();
+                        itemData.SaveObjectData(gameObject.name);
                         isPurchased = true;
                         if (PriceTag != null) PriceTag.SetActive(false);
                         
