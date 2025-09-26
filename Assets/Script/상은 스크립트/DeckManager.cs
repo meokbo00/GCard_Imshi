@@ -20,8 +20,11 @@ public class DeckManager : MonoBehaviour
     private List<Card> selectedCards = new List<Card>();
     private const int MAX_SELECTED_CARDS = 5;
 
+    UseJokerSkill useJokerSkill;
+
     void Start()
     {
+        useJokerSkill = FindObjectOfType<UseJokerSkill>();
         overorclear = FindObjectOfType<OverOrClear>();
         InitializeDeck();
         ShuffleDeck();
@@ -372,33 +375,24 @@ public class DeckManager : MonoBehaviour
                         handRanking.AddBlueChipValue(point);
 
                         // 핸드플레이 시작하자마자 핸드플레이전 발동되는 조커 있는지 체크
-
                         
 
                         // 블루칩을 얻고 나서 조커 아이템 발동되어야 함!!!! 이게 순서
                         JokerStat[] jokerStats = FindObjectsOfType<JokerStat>();
-                        UseJokerSkill useJokerSkill = FindObjectOfType<UseJokerSkill>();
-                        foreach (JokerStat jokerStat in jokerStats)
-                        {
-                            //jokerStat.LogCardPointAddition(card, point);
-                            jokerStat.HeartR4(card, point); // 지금은 임시로 하트 발동을 걸어뒀지만 이제부터 현재 활성화 되어있는 조커의 이름을 따와 메서드를 순서대로 발동시키면 됨!!!!
-                            if (jokerStat.playTiming == JokerStat.PlayTiming.After_CardPlay)
-                            {
-                                useJokerSkill.AfterCardPlayJokerSkill();
-                            }
-                        }
+                        useJokerSkill.AfterCardPlayJokerSkill(card, point);
 
-                        // 핸드플레이가 다 끝나고 나서 발동되는 조커 있는지 체크!
+                        yield return new WaitForSeconds(1f);
+
                     }
-
                     // 0.2초 대기 후 텍스트 비활성화
                     yield return new WaitForSeconds(0.2f);
                     pointText.gameObject.SetActive(false);
                 }
             }
         }
-//////////////////////////////////////////////////////////////////////////////////////////////////
         // 모든 포인트 텍스트 표시가 끝난 후 오른쪽으로 이동 및 새 카드 생성
+        useJokerSkill.AfterHandPlayJokerSkill();
+        yield return new WaitForSeconds(1f);
         yield return StartCoroutine(MoveCardsRightCoroutine());
     }
 
@@ -769,6 +763,7 @@ public class DeckManager : MonoBehaviour
         // updateScore가 true일 때만 점수 업데이트
         if (updateScore && handRanking != null)
         {
+            Debug.Log("점수 합산!");
             handRanking.UpdateSumPoint();
         }
 

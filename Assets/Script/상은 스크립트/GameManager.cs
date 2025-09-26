@@ -47,7 +47,7 @@ public class GameManager : MonoBehaviour
     public void ResetData()
     {
         playerData = new PlayerData();
-        playerData.money = 500;
+        playerData.money = 1000;
         playerData.handcount = 4;
         playerData.trashcount = 4;
         playerData.round = 1;

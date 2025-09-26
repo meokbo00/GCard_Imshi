@@ -17,6 +17,7 @@ public class DragItem : MonoBehaviour
     private List<Transform> siblingItems = new List<Transform>(); // 형제 아이템 목록
 
     public GameObject PriceTag;
+    public GameObject ExplainBox;
     public bool isDrag = false;
     public bool isInBuyZone = false;
     public bool isInSellZone = false; // 판매 영역 안에 있는지 여부
@@ -35,6 +36,12 @@ public class DragItem : MonoBehaviour
 
     private void OnMouseDown()
     {
+        // ExplainBox 표시
+        if (ExplainBox != null)
+        {
+            ExplainBox.SetActive(true);
+        }
+
         // JokerZone 레이어를 무시하도록 설정
         int jokerZoneLayer = LayerMask.NameToLayer("JokerZone");
         int originalLayer = gameObject.layer;
@@ -202,6 +209,10 @@ public class DragItem : MonoBehaviour
     
     private void OnMouseUp()
     {
+        if (ExplainBox != null)
+        {
+            ExplainBox.SetActive(false);
+        }
         if (!isDragging) return;
         
         // 판매 영역 안에서 놓은 경우
