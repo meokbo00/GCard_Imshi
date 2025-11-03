@@ -14,7 +14,8 @@ public class BuyZone : MonoBehaviour
         "ItemPack",
         "Planet",
         "Taro",
-        "Voucher"
+        "Voucher",
+        "MoneyPack"
     };
 
     private void Update()
@@ -53,6 +54,30 @@ public class BuyZone : MonoBehaviour
                 if (planetStat != null)
                 {
                     price = planetStat.price;
+                    hasPrice = true;
+                }
+                
+                // ItemPackStat 확인
+                var itemPackStat = draggingItem.GetComponent<ItemPackStat>();
+                if (itemPackStat != null)
+                {
+                    price = itemPackStat.price;
+                    hasPrice = true;
+                }
+                
+                // MoneyPackStat 확인
+                var moneyPackStat = draggingItem.GetComponent<ItemPackStat>();
+                if (moneyPackStat != null)
+                {
+                    price = itemPackStat.price;
+                    hasPrice = true;
+                }
+
+                // VoucherStat 확인
+                var voucherStat = draggingItem.GetComponent<VoucherStat>();
+                if (voucherStat != null)
+                {
+                    price = voucherStat.price;
                     hasPrice = true;
                 }
                 

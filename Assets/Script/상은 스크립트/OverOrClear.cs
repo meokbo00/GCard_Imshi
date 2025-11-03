@@ -11,7 +11,8 @@ public class OverOrClear : MonoBehaviour
 
     public GameObject PlayBtn;
     public GameObject CardZone;
-    
+    public GameObject RemainCards;
+    SoundManager2 soundManager2;
     HandRanking handRanking;
     GameManager gameManager;
     GameSaveData gameSaveData;
@@ -22,20 +23,23 @@ public class OverOrClear : MonoBehaviour
         cashOutManager = FindObjectOfType<CashOutManager>();
         gameManager = FindObjectOfType<GameManager>();
         handRanking = FindObjectOfType<HandRanking>();
+        soundManager2 = FindObjectOfType<SoundManager2>();
         CashOutBox.SetActive(false);
         FailBox.SetActive(false);
     }
     public void IsClearOrFail()
     {
         Debug.Log("게임 클리어/오버 체크");
-        if (handRanking.sumPoint >= gameManager.goalPoints[gameManager.playerData.round - 1])
+        Debug.Log("이번판에서 낸 점수 : " + handRanking.pointSum);
+        if (handRanking.pointSum >= gameManager.goalPoints[gameManager.playerData.round - 1])
         {
             Debug.Log("스테이지 클리어!");
             StartCoroutine(HideUIElementsAndShowBox(CashOutBox));
         }
-        else if (gameManager.playerData.handcount == 0 && (handRanking.sumPoint < gameManager.goalPoints[gameManager.playerData.round - 1]))
+        else if (gameManager.currentHandCount == 0 && (handRanking.pointSum < gameManager.goalPoints[gameManager.playerData.round - 1]))
         {
             Debug.Log("스테이지 오버!");
+            soundManager2.PlayFailSound();
             StartCoroutine(HideUIElementsAndShowBox(FailBox));
         }
     }
@@ -45,10 +49,10 @@ public class OverOrClear : MonoBehaviour
         // 모든 UI 요소들 모음
         List<GameObject> uiElements = new List<GameObject>();
         
-        // PlayBtn과 CardZone 추가
+        // PlayBtn과 CardZone, RemainCards 추가
         if (PlayBtn != null && PlayBtn.activeSelf) uiElements.Add(PlayBtn);
         if (CardZone != null && CardZone.activeSelf) uiElements.Add(CardZone);
-        
+        if (RemainCards != null && RemainCards.activeSelf) uiElements.Add(RemainCards);        
         // 활성화된 카드들 추가
         GameObject[] cards = GameObject.FindGameObjectsWithTag("Card");
         foreach (var card in cards)
@@ -68,8 +72,16 @@ public class OverOrClear : MonoBehaviour
         
         foreach (var element in uiElements)
         {
-            // PlayBtn은 170유닛, 나머지는 10유닛 내리기
-            float moveDistance = (element == PlayBtn) ? 170f : 10f;
+            // UI 요소별 이동 거리 설정
+            float moveDistance = 10f; // 기본값 10유닛
+            if (element == PlayBtn)
+            {
+                moveDistance = 170f;  // PlayBtn은 170유닛
+            }
+            else if (element == RemainCards)
+            {
+                moveDistance = 420f;  // RemainCards는 400유닛
+            }
             Vector3 targetPos = element.transform.position - new Vector3(0, moveDistance, 0);
             
             element.transform.DOMoveY(targetPos.y, 0.5f)
@@ -145,8 +157,13 @@ public class OverOrClear : MonoBehaviour
     // 머니박스와 실패박스에 달린 버튼을 눌렀을 때 실행되는 메서드
     public void OnCashOutButton()
     {
+        soundManager2.PlayCashOutSound();
         gameManager.playerData.money += cashOutManager.totalmoney;
         gameManager.UpdateUI();
+        gameManager.currentHandCount = gameManager.playerData.handcount;
+        gameManager.currentTrashCount = gameManager.playerData.trashcount;
+        gameManager.handCountText.text = gameManager.currentHandCount.ToString();
+        gameManager.trashCountText.text = gameManager.currentTrashCount.ToString();
         StartCoroutine(HideCashOutAndShowShop());
     }
     
@@ -157,7 +174,7 @@ public class OverOrClear : MonoBehaviour
         Vector3 cashOutEndPos = cashOutStartPos - new Vector3(0, 7f, 0);
         
         // 아래로 부드럽게 이동
-        yield return CashOutBox.transform.DOMoveY(cashOutEndPos.y, 0.5f)
+        yield return CashOutBox.transform.DOMoveY(cashOutEndPos.y, 0.3f)
             .SetEase(Ease.InCubic)
             .SetUpdate(UpdateType.Normal, true)
             .WaitForCompletion();

@@ -65,12 +65,16 @@ public class AudioSettingsManager : MonoBehaviour
     {
         BGMSlider.value = 0.5f;
         SFXSlider.value = 0.5f;
+
+        Debug.Log("모든 볼륨 초기값으로 변경!");
     }
 
     public void MuteAll()
     {
         BGMSlider.value = 0f;
         SFXSlider.value = 0f;
+
+        Debug.Log("모든 볼륨 음소거!");
     }
 
     private void OnApplicationQuit()

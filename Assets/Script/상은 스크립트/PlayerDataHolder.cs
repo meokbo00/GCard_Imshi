@@ -9,6 +9,8 @@ public class PlayerData
     public int money;
     public int ante;
     public int round;
+    public float bestscore;
+    public int moneyLimit;
 }
 
 public class PlayerDataHolder : MonoBehaviour

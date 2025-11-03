@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using TMPro;
+using DG.Tweening;
 
 public class HandRanking : MonoBehaviour
 {
@@ -13,25 +14,79 @@ public class HandRanking : MonoBehaviour
     public TextMeshProUGUI blueChipText; // BlueChip 점수를 표시할 UI 텍스트
     public TextMeshProUGUI redChipText; // 레드 칩 값 표시용 텍스트
     public TextMeshProUGUI sumPointText; // 총 포인트 표시용 텍스트
+    public TextMeshProUGUI currentPointText; // 현재 포인트 표시용 텍스트
     public float sumPoint = 0f; // 총 포인트
     public float BlueChip = 0f; // 블루 칩 값
     public float RedChip = 0f; // 레드 칩 값
+    public float currentPoint = 0f; // 현재 포인트
+    public float pointSum = 0f;
+
+    public GameObject BluechipFire;
+    public GameObject RedchipFire;
 
     private bool isHandPlaying = false; // HandPlay 중인지 여부를 체크하는 플래그
+    public string currentHandRanking;
+    private bool hasTriggeredFire = false; // 플래그 변수 추가
+
 
     private GameSaveData gameSaveData;
     private GameManager gameManager;
+    PlayerData playerData;
+    SaveManager saveManager;
 
     void Start()
     {
+        saveManager = FindObjectOfType<SaveManager>();
         gameManager = FindObjectOfType<GameManager>();
         gameSaveData = FindAnyObjectByType<GameSaveData>();
         deckManager = FindObjectOfType<DeckManager>();
         sumPointText.text = "0"; // 초기값 설정
+        playerData = saveManager.Load();
     }
 
     void Update()
     {
+        if(isHandPlaying && gameManager.goalPoints[playerData.round - 1] <= BlueChip * RedChip)
+        {
+            if (!hasTriggeredFire) // 최초 실행인 경우에만 실행
+        {
+            hasTriggeredFire = true; // 플래그 설정
+            // 파이어 오브젝트 활성화 및 애니메이션
+            BluechipFire.SetActive(true);
+            RedchipFire.SetActive(true);
+            
+            // 초기 크기를 (0.1, 0.1, 0.1)로 설정
+            BluechipFire.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
+            RedchipFire.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
+            
+            // 부드럽게 (3, 3, 3)으로 크기 증가
+            BluechipFire.transform.DOScale(new Vector3(3f, 3f, 3f), 3f);
+            RedchipFire.transform.DOScale(new Vector3(3f, 3f, 3f), 3f);
+        }
+        }
+        else if(!isHandPlaying && BluechipFire.activeSelf && RedchipFire.activeSelf)
+        {            
+            // 초기 크기를 (3, 3, 3)으로 설정
+            BluechipFire.transform.localScale = new Vector3(3f, 3f, 3f);
+            RedchipFire.transform.localScale = new Vector3(3f, 3f, 3f);
+            
+            // 부드럽게 (0.1, 0.1, 0.1)으로 크기 감소 및 y축으로 20만큼 내려가며 비활성화
+            Sequence blueChipSequence = DOTween.Sequence();
+            blueChipSequence.Join(BluechipFire.transform.DOScale(new Vector3(0.1f, 0.1f, 0.1f), 3f));
+            blueChipSequence.Join(BluechipFire.transform.DOMoveY(BluechipFire.transform.position.y - 20f, 3f));
+            blueChipSequence.OnComplete(() => {
+                BluechipFire.SetActive(false);
+            });
+            blueChipSequence.Play();
+            
+            Sequence redChipSequence = DOTween.Sequence();
+            redChipSequence.Join(RedchipFire.transform.DOScale(new Vector3(0.1f, 0.1f, 0.1f), 3f));
+            redChipSequence.Join(RedchipFire.transform.DOMoveY(RedchipFire.transform.position.y - 20f, 3f));
+            redChipSequence.OnComplete(() => {
+                RedchipFire.SetActive(false);
+            });
+            redChipSequence.Play();
+        }
         if (!isHandPlaying) // HandPlay 중이 아닐 때만 족보 체크
         {
             selectedCards.Clear();
@@ -83,54 +138,63 @@ public class HandRanking : MonoBehaviour
             if (IsStraightFlush(selectedCards))
             {
                 handRank = "스트레이트\n플러시";
+                currentHandRanking = "StraightFlush";
                 BlueChip = 100f;
                 RedChip = 8f;
             }
             else if (IsFourOfAKind(selectedCards))
             {
                 handRank = "포카드";
+                currentHandRanking = "FourCard";
                 BlueChip = 60f;
                 RedChip = 7f;
             }
             else if (IsFullHouse(selectedCards))
             {
                 handRank = "풀하우스";
+                currentHandRanking = "FullHouse";
                 BlueChip = 40f;
                 RedChip = 4f;
             }
             else if (IsFlush(selectedCards))
             {
                 handRank = "플러시";
+                currentHandRanking = "Flush";
                 BlueChip = 35f;
                 RedChip = 4f;
             }
             else if (IsStraight(selectedCards))
             {
                 handRank = "스트레이트";
+                currentHandRanking = "Straight";
                 BlueChip = 30f;
                 RedChip = 4f;
             }
             else if (IsThreeOfAKind(selectedCards))
             {
                 handRank = "트리플";
+                currentHandRanking = "Triple";
                 BlueChip = 30f;
                 RedChip = 3f;
             }
             else if (IsTwoPair(selectedCards))
             {
                 handRank = "투페어";
+                currentHandRanking = "TwoPair";
                 BlueChip = 20f;
                 RedChip = 2f;
             }
             else if (IsOnePair(selectedCards))
             {
                 handRank = "원 페어";
+                currentHandRanking = "Pair";
                 BlueChip = 10f;
                 RedChip = 2f;
             }
             else
             {
                 handRank = "하이카드";
+                currentHandRanking = "HighCard";
                 BlueChip = 5f;
                 RedChip = 1f;
             }
@@ -315,35 +379,181 @@ public class HandRanking : MonoBehaviour
         isHandPlaying = false;
     }
 
-    public void AddBlueChipValue(float value)
+public void AddBlueChipValue(float value)
+{
+    BlueChip += value;
+    // UI 업데이트
+    if (blueChipText != null)
     {
-        BlueChip += value;
-        // UI 업데이트
-        if (blueChipText != null)
-        {
-            blueChipText.text = BlueChip.ToString();
-        }
+        blueChipText.text = BlueChip.ToString();
+        // 통통튀는 효과 추가
+        blueChipText.transform.DOKill(); // 기존 애니메이션 중지
+        blueChipText.transform.localScale = Vector3.one; // 크기 초기화
+        
+        // 전체적인 스케일 애니메이션 (1.0 -> 1.5 -> 1.0)
+        Sequence scaleSequence = DOTween.Sequence();
+        scaleSequence.Append(blueChipText.transform.DOScale(1.5f, 0.15f).SetEase(Ease.OutQuad));
+        scaleSequence.Append(blueChipText.transform.DOScale(1f, 0.25f).SetEase(Ease.OutBack));
+        
+        // 말랑말랑한 통통 튀는 효과
+        Sequence bounceSequence = DOTween.Sequence();
+        
+        // 위로 빠르게 튀어오르는 효과 (세로로 늘리고 가로로 줄이기)
+        bounceSequence.Append(blueChipText.transform.DOScaleX(0.6f, 0.08f).SetEase(Ease.OutQuad));
+        bounceSequence.Join(blueChipText.transform.DOScaleY(2.0f, 0.08f).SetEase(Ease.OutQuad));
+        
+        // 아래로 착지하며 퍼지는 효과
+        bounceSequence.Append(blueChipText.transform.DOScaleX(1.8f, 0.1f).SetEase(Ease.OutQuad));
+        bounceSequence.Join(blueChipText.transform.DOScaleY(0.4f, 0.1f).SetEase(Ease.InQuad));
+        
+        // 다시 위로 살짝 튀어오르기
+        bounceSequence.Append(blueChipText.transform.DOScaleX(1.3f, 0.1f).SetEase(Ease.OutQuad));
+        bounceSequence.Join(blueChipText.transform.DOScaleY(1.6f, 0.1f).SetEase(Ease.OutQuad));
+        
+        // 원래 크기로 돌아오기
+        bounceSequence.Append(blueChipText.transform.DOScale(1f, 0.2f).SetEase(Ease.OutElastic));
+        
+        // 두 애니메이션을 함께 실행
+        DOTween.Kill(blueChipText.transform); // 기존 애니메이션 정리
+        scaleSequence.Play();
+        bounceSequence.Play();
     }
-    public void AddRedChipValue(float value)
+}
+
+public void AddRedChipValue(float value)
+{
+    RedChip += value;
+    // UI 업데이트
+    if (redChipText != null)
     {
-        RedChip += value;
-        // UI 업데이트
-        if (redChipText != null)
-        {
-            redChipText.text = RedChip.ToString();
-        }
+        redChipText.text = RedChip.ToString();
+        
+        // 전체적인 스케일 애니메이션 (1.0 -> 1.5 -> 1.0)
+        Sequence scaleSequence = DOTween.Sequence();
+        scaleSequence.Append(redChipText.transform.DOScale(1.5f, 0.15f).SetEase(Ease.OutQuad));
+        scaleSequence.Append(redChipText.transform.DOScale(1f, 0.25f).SetEase(Ease.OutBack));
+        
+        // 말랑말랑한 통통 튀는 효과
+        Sequence bounceSequence = DOTween.Sequence();
+        
+        // 위로 빠르게 튀어오르는 효과 (세로로 늘리고 가로로 줄이기)
+        bounceSequence.Append(redChipText.transform.DOScaleX(0.6f, 0.08f).SetEase(Ease.OutQuad));
+        bounceSequence.Join(redChipText.transform.DOScaleY(2.0f, 0.08f).SetEase(Ease.OutQuad));
+        
+        // 아래로 착지하며 퍼지는 효과
+        bounceSequence.Append(redChipText.transform.DOScaleX(1.8f, 0.1f).SetEase(Ease.OutQuad));
+        bounceSequence.Join(redChipText.transform.DOScaleY(0.4f, 0.1f).SetEase(Ease.InQuad));
+        
+        // 다시 위로 살짝 튀어오르기
+        bounceSequence.Append(redChipText.transform.DOScaleX(1.3f, 0.1f).SetEase(Ease.OutQuad));
+        bounceSequence.Join(redChipText.transform.DOScaleY(1.6f, 0.1f).SetEase(Ease.OutQuad));
+        
+        // 원래 크기으로 돌아오기
+        bounceSequence.Append(redChipText.transform.DOScale(1f, 0.2f).SetEase(Ease.OutElastic));
+        
+        // 두 애니메이션을 함께 실행
+        DOTween.Kill(redChipText.transform); // 기존 애니메이션 정리
+        scaleSequence.Play();
+        bounceSequence.Play();
     }
+}
+
+public void MultipleRedChipValue(float value)
+{
+    RedChip *= value;
+    // UI 업데이트
+    if (redChipText != null)
+    {
+        redChipText.text = RedChip.ToString();
+        
+        // 전체적인 스케일 애니메이션 (1.0 -> 1.5 -> 1.0)
+        Sequence scaleSequence = DOTween.Sequence();
+        scaleSequence.Append(redChipText.transform.DOScale(1.5f, 0.15f).SetEase(Ease.OutQuad));
+        scaleSequence.Append(redChipText.transform.DOScale(1f, 0.25f).SetEase(Ease.OutBack));
+        
+        // 말랑말랑한 통통 튀는 효과
+        Sequence bounceSequence = DOTween.Sequence();
+        
+        // 위로 빠르게 튀어오르는 효과 (세로로 늘리고 가로로 줄이기)
+        bounceSequence.Append(redChipText.transform.DOScaleX(0.6f, 0.08f).SetEase(Ease.OutQuad));
+        bounceSequence.Join(redChipText.transform.DOScaleY(2.0f, 0.08f).SetEase(Ease.OutQuad));
+        
+        // 아래로 착지하며 퍼지는 효과
+        bounceSequence.Append(redChipText.transform.DOScaleX(1.8f, 0.1f).SetEase(Ease.OutQuad));
+        bounceSequence.Join(redChipText.transform.DOScaleY(0.4f, 0.1f).SetEase(Ease.InQuad));
+        
+        // 다시 위로 살짝 튀어오르기
+        bounceSequence.Append(redChipText.transform.DOScaleX(1.3f, 0.1f).SetEase(Ease.OutQuad));
+        bounceSequence.Join(redChipText.transform.DOScaleY(1.6f, 0.1f).SetEase(Ease.OutQuad));
+        
+        // 원래 크기으로 돌아오기
+        bounceSequence.Append(redChipText.transform.DOScale(1f, 0.2f).SetEase(Ease.OutElastic));
+        
+        // 두 애니메이션을 함께 실행
+        DOTween.Kill(redChipText.transform); // 기존 애니메이션 정리
+        scaleSequence.Play();
+        bounceSequence.Play();
+    }
+}
 
     public void UpdateSumPoint()
     {
-        float currentPoints = BlueChip * RedChip;
-        sumPoint += currentPoints;  // 기존 sumPoint에 현재 점수를 더함
-        gameManager.gsumPoint = sumPoint;
-
-        if (sumPointText != null)
+        float newSumPoint = BlueChip * RedChip;
+        pointSum += newSumPoint;
+        gameManager.gsumPoint = newSumPoint;
+        Debug.Log("현재 최고점수 : " + playerData.bestscore);
+        Debug.Log("현재 점수 : " + newSumPoint);
+        if(playerData.bestscore < newSumPoint)
         {
-            sumPointText.text = sumPoint.ToString(); // UI 업데이트
+            gameManager.NewBestScore(newSumPoint);
         }
+        
+        // sumPoint를 부드럽게 새로운 값으로 업데이트하는 애니메이션
+        DOTween.To(
+            () => sumPoint,
+            x => {
+                sumPoint = x;
+                if (sumPointText != null)
+                {
+                    sumPointText.text = Mathf.FloorToInt(x).ToString();
+                }
+            },
+            newSumPoint,
+            0.5f // 0.5초 동안 애니메이션
+        ).OnComplete(() => {
+            // sumPoint 애니메이션이 완료된 후 2초 대기 후에 currentPoint로 이동하는 애니메이션 시작
+            DOVirtual.DelayedCall(1.2f, () => {
+                float targetCurrentPoint = currentPoint + sumPoint;
+                
+                // currentPoint를 부드럽게 증가시키는 애니메이션
+                DOTween.To(
+                    () => currentPoint,
+                    x => {
+                        currentPoint = x;
+                        if (currentPointText != null)
+                        {
+                            currentPointText.text = Mathf.FloorToInt(x).ToString();
+                        }
+                    },
+                    targetCurrentPoint,
+                    1f // 1초 동안 애니메이션
+                );
+                
+                // sumPoint를 0으로 부드럽게 감소시키는 애니메이션
+                DOTween.To(
+                    () => sumPoint,
+                    x => {
+                        sumPoint = x;
+                        if (sumPointText != null)
+                        {
+                            sumPointText.text = Mathf.FloorToInt(x).ToString();
+                        }
+                    },
+                    0f, // 0으로 감소
+                    1f  // 1초 동안 애니메이션
+                );
+            });
+        });
     }
 
     // BlueChip과 RedChip을 리셋하는 메서드 추가

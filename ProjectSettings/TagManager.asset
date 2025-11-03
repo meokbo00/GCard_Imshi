@@ -20,6 +20,7 @@ TagManager:
   - SellZone
   - JokerSlot
   - TaroAndPlanetZone
+  - MoneyPack
   layers:
   - Default
   - TransparentFX

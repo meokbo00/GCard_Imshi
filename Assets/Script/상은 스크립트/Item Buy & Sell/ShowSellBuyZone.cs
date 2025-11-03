@@ -22,7 +22,8 @@ public class ShowSellBuyZone : MonoBehaviour
         "ItemPack",
         "Planet",
         "Taro",
-        "Voucher"
+        "Voucher",
+        "MoneyPack"
     };
     
     private readonly HashSet<string> sellValidTags = new HashSet<string>
@@ -110,6 +111,9 @@ public class ShowSellBuyZone : MonoBehaviour
         scaleTween = BuyZone.transform.DOScale(1f, ANIM_DURATION)
             .SetEase(Ease.OutQuad)
             .OnComplete(StartPulseAnimation);
+            
+        // 1초 후 드래그 상태 로그 출력
+        StartCoroutine(CheckDragStateAfterDelay());
     }
 
     private void StartPulseAnimation()
@@ -141,6 +145,27 @@ public class ShowSellBuyZone : MonoBehaviour
             .OnComplete(() => BuyZone.SetActive(false));
     }
     
+    private IEnumerator CheckDragStateAfterDelay()
+    {
+        // 1초 대기
+        yield return new WaitForSeconds(1f);
+        
+        // 마우스 왼쪽 버튼이 눌려있는지 확인
+        bool isMouseButtonDown = Input.GetMouseButton(0);
+        
+        // 마우스 상태에 따라 로그 출력
+        if (isMouseButtonDown)
+        {
+            Debug.Log("마우스 왼쪽 버튼이 눌려 있습니다.");
+        }
+        else
+        {
+            Debug.Log("마우스 왼쪽 버튼이 눌려 있지 않습니다.");
+            HideBuyZone();
+            HideSellZone();
+        }
+    }
+    
     private void HideSellZone()
     {
         if (SellZone == null || !SellZone.activeSelf) return;
@@ -166,5 +191,8 @@ public class ShowSellBuyZone : MonoBehaviour
         scaleTween = SellZone.transform.DOScale(1f, ANIM_DURATION)
             .SetEase(Ease.OutQuad)
             .OnComplete(StartPulseAnimation);
+            
+            StartCoroutine(CheckDragStateAfterDelay());
+
     }
 }

@@ -10,6 +10,7 @@ public class RemainCards : MonoBehaviour
     private DeckManager deckManager;
     private int totalCards = 52; // 전체 카드 수
     private int initialCards = 8; // 초기에 활성화되는 카드 수
+    public int remainCardsCount;
 
     // Start is called before the first frame update
     void Start()
@@ -42,5 +43,6 @@ public class RemainCards : MonoBehaviour
         // 남은 카드 수 계산 (덱에 남은 카드 수 + 활성화된 카드 수)
         int remainCards = deckCards + activeCards;
         remainText.text = $"{remainCards}/{totalCards}";
+        remainCardsCount = remainCards;
     }
 }

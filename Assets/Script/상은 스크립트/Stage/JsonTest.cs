@@ -5,11 +5,15 @@ using System.Collections.Generic;
 
 public class JsonTest : MonoBehaviour
 {
+    SaveManager saveManager;
+    PlayerData playerData;
     [Header("TextEffect 참조")]
     public TextEffect textEffect;  // TextEffect 컴포넌트 참조
 
     void Start()
     {
+        saveManager = FindAnyObjectByType<SaveManager>();
+        playerData = saveManager.Load();
         // JSON 파일 로드
         TextAsset jsonFile = Resources.Load<TextAsset>("json/행성 설명 정리");
         
@@ -25,7 +29,7 @@ public class JsonTest : MonoBehaviour
                     // TextEffect를 통해 타이핑 효과로 텍스트 표시 (기본 동작 유지)
                     if (textEffect != null)
                     {
-                        textEffect.StartTypingEffect(planetList[currentPlanetIndex].name, planetList[currentPlanetIndex].explain);
+                        textEffect.StartTypingEffect(planetList[playerData.ante-1].name, planetList[playerData.ante-1].explain);
                     }
                     else
                     {
@@ -46,14 +50,13 @@ public class JsonTest : MonoBehaviour
 
     // 행성 정보를 담는 클래스
     private List<PlanetInfo> planetList;
-    private int currentPlanetIndex = 5; // 기본값으로 5번 인덱스 사용 (기존과 동일하게 유지)
 
     // 현재 행성의 이름을 가져오는 메서드
     public string GetCurrentPlanetName()
     {
-        if (planetList != null && planetList.Count > currentPlanetIndex)
+        if (planetList != null && planetList.Count > playerData.ante)
         {
-            return planetList[currentPlanetIndex].name;
+            return planetList[playerData.ante-1].name;
         }
         return string.Empty;
     }
@@ -61,9 +64,9 @@ public class JsonTest : MonoBehaviour
     // 현재 행성의 설명을 가져오는 메서드
     public string GetCurrentPlanetExplain()
     {
-        if (planetList != null && planetList.Count > currentPlanetIndex)
+        if (planetList != null && planetList.Count > playerData.ante)
         {
-            return planetList[currentPlanetIndex].explain;
+            return planetList[playerData.ante-1].explain;
         }
         return string.Empty;
     }

@@ -6,6 +6,8 @@ using DG.Tweening;
 
 public class DeckManager : MonoBehaviour
 {
+    GameManager gameManager;
+    SoundManager2 soundManager2;
     public GameObject cardPrefab;
     public GameObject playZone; // PlayZone 오브젝트 참조 추가
     OverOrClear overorclear;
@@ -15,15 +17,56 @@ public class DeckManager : MonoBehaviour
     public HandRanking handRanking; // HandRanking 참조 추가
     private List<Card> deck = new List<Card>();
     private List<Card> discardPile = new List<Card>();
-    private List<Card> hand = new List<Card>();
+    public List<Card> hand = new List<Card>();
     private Vector3 cardScale = new Vector3(1.5f, 1.5f, 1.5f); // 카드 스케일 설정
-    private List<Card> selectedCards = new List<Card>();
+    public List<Card> selectedCards = new List<Card>();
     private const int MAX_SELECTED_CARDS = 5;
 
     UseJokerSkill useJokerSkill;
+    
+    /// <summary>
+    /// 카드를 제자리에서 말랑말랑하게 튕기는 효과를 적용합니다.
+    /// </summary>
+    /// <param name="cardTransform">튕길 카드의 Transform</param>
+    /// <param name="bouncePower">튕기는 힘 (기본값: 0.15f)</param>
+    /// <param name="duration">애니메이션 지속 시간 (기본값: 0.6f)</param>
+    public void BounceCard(Transform cardTransform, float bouncePower = 0.15f, float duration = 0.6f)
+    {
+        // 원래 값들 저장
+        Vector3 originalScale = cardTransform.localScale;
+        Quaternion originalRotation = cardTransform.localRotation;
+        
+        // 애니메이션 시퀀스 생성
+        Sequence bounceSequence = DOTween.Sequence();
+        
+        // 1. 살짝 커지기
+        bounceSequence.Append(cardTransform.DOScale(originalScale * 1.1f, duration * 0.2f).SetEase(Ease.OutQuad));
+        
+        // 2. 아래로 찌그러지기
+        bounceSequence.Append(cardTransform.DOScaleX(originalScale.x * 1.2f, duration * 0.1f).SetEase(Ease.OutQuad));
+        bounceSequence.Join(cardTransform.DOScaleY(originalScale.y * 0.9f, duration * 0.1f).SetEase(Ease.OutQuad));
+        
+        // 3. 위로 튀어오르기 (젤리 효과)
+        bounceSequence.Append(cardTransform.DOScaleX(originalScale.x * 0.9f, duration * 0.1f).SetEase(Ease.OutQuad));
+        bounceSequence.Join(cardTransform.DOScaleY(originalScale.y * 1.1f, duration * 0.1f).SetEase(Ease.OutQuad));
+        
+        // 4. 원래 모양으로 돌아오기
+        bounceSequence.Append(cardTransform.DOScale(originalScale, duration * 0.2f).SetEase(Ease.OutElastic));
+        
+        // 5. 미세한 흔들림 효과 (위치 이동 없이 회전만)
+        bounceSequence.Join(cardTransform.DOShakeRotation(duration * 0.3f, new Vector3(0, 0, 3f), 3, 30, false).SetEase(Ease.OutQuad));
+        
+        // 애니메이션 완료 후 원래 값으로 복구
+        bounceSequence.OnComplete(() => {
+            cardTransform.localRotation = originalRotation;
+            cardTransform.localScale = originalScale;
+        });
+    }
 
     void Start()
     {
+        gameManager = FindObjectOfType<GameManager>();
+        soundManager2 = FindObjectOfType<SoundManager2>();
         useJokerSkill = FindObjectOfType<UseJokerSkill>();
         overorclear = FindObjectOfType<OverOrClear>();
         InitializeDeck();
@@ -271,6 +314,7 @@ public class DeckManager : MonoBehaviour
 
     public void HandPlay()
     {
+        handRanking.StartHandPlay();
         // 선택된 카드가 없으면 아무 동작도 하지 않음
         if (selectedCards.Count == 0) return;
 
@@ -313,7 +357,7 @@ public class DeckManager : MonoBehaviour
             if (card != null)
             {
                 Vector3 currentPos = card.transform.position;
-                Vector3 targetPos = new Vector3(currentPos.x, currentPos.y + 2.5f, currentPos.z);
+                Vector3 targetPos = new Vector3(currentPos.x, currentPos.y + 1.5f, currentPos.z);
                 
                 // DOTween을 사용하여 카드 이동
                 card.transform.DOMove(targetPos, 0.3f)
@@ -363,6 +407,7 @@ public class DeckManager : MonoBehaviour
                     }
 
                     pointText.text = "+" + point.ToString();
+                    pointText.color = new Color(23f/255f, 183f/255f, 255f/255f);
                     pointText.gameObject.SetActive(true);
                     /////////////////////////////////////////////////////////
 
@@ -371,8 +416,11 @@ public class DeckManager : MonoBehaviour
                     {
                         Debug.Log($"{cardIndex}번째 카드 핸드플레이");
                         Debug.Log($"{card.suit} 모양 {card.rank}에 {point}만큼 블루칩 증가");
+                        BounceCard(card.transform);
                         cardIndex++;
                         handRanking.AddBlueChipValue(point);
+                        soundManager2.PlayBlueChipSound();
+                        
 
                         // 핸드플레이 시작하자마자 핸드플레이전 발동되는 조커 있는지 체크
                         
@@ -391,9 +439,10 @@ public class DeckManager : MonoBehaviour
             }
         }
         // 모든 포인트 텍스트 표시가 끝난 후 오른쪽으로 이동 및 새 카드 생성
-        useJokerSkill.AfterHandPlayJokerSkill();
+        yield return StartCoroutine(useJokerSkill.AfterHandPlayJokerSkill());
         yield return new WaitForSeconds(1f);
         yield return StartCoroutine(MoveCardsRightCoroutine());
+        handRanking.EndHandPlay();
     }
 
     public void Suit()
@@ -857,6 +906,14 @@ public class DeckManager : MonoBehaviour
 
         // 모든 애니메이션이 완료될 때까지 대기
         yield return new WaitForSeconds(moveDuration);
+        if(gameManager.sortgear == 1)
+        {
+            Suit();
+        }
+        else if(gameManager.sortgear == 2)
+        {
+            Rank();
+        }
         overorclear.IsClearOrFail();
     }
 

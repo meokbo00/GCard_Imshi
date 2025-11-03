@@ -67,45 +67,60 @@ public class InfoAndOptions : MonoBehaviour
                     trigger = info.AddComponent<EventTrigger>();
                 }
 
-                // 클릭 이벤트 추가
-                EventTrigger.Entry entry = new EventTrigger.Entry();
-                entry.eventID = EventTriggerType.PointerClick;
-                entry.callback.AddListener((data) => OnInfoClick(info));
-                trigger.triggers.Add(entry);
+                // 누르는 동안 Detail 표시: PointerDown
+                EventTrigger.Entry down = new EventTrigger.Entry();
+                down.eventID = EventTriggerType.PointerDown;
+                down.callback.AddListener((data) => ShowDetail(info));
+                trigger.triggers.Add(down);
+
+                // 손을 뗄 때/마우스가 벗어날 때 Detail 숨김: PointerUp, PointerExit
+                EventTrigger.Entry up = new EventTrigger.Entry();
+                up.eventID = EventTriggerType.PointerUp;
+                up.callback.AddListener((data) => HideAllDetails());
+                trigger.triggers.Add(up);
+
+                EventTrigger.Entry exit = new EventTrigger.Entry();
+                exit.eventID = EventTriggerType.PointerExit;
+                exit.callback.AddListener((data) => HideAllDetails());
+                trigger.triggers.Add(exit);
             }
         }
     }
 
-    private void OnInfoClick(GameObject clickedInfo)
+    // 길게 누르는 동안 Detail을 보여줌
+    private void ShowDetail(GameObject info)
     {
-        if (infoToDetailMap.TryGetValue(clickedInfo, out GameObject detail))
+        if (infoToDetailMap.TryGetValue(info, out GameObject detail))
         {
-            // 모든 Detail 비활성화
             foreach (GameObject d in InfoExplain)
             {
-                if (d != null)
-                {
-                    d.SetActive(false);
-                }
+                if (d != null) d.SetActive(false);
             }
+            if (detail != null) detail.SetActive(true);
+        }
+    }
 
-            // 클릭된 Info에 해당하는 Detail 활성화
-            if (detail != null)
-            {
-                detail.SetActive(true);
-            }
+    // 손을 떼거나 포인터가 벗어나면 Detail을 모두 숨김
+    private void HideAllDetails()
+    {
+        foreach (GameObject d in InfoExplain)
+        {
+            if (d != null) d.SetActive(false);
         }
     }
 
     // 게임에서 런 정보 버튼을 눌렀을 때 실행되는 내용
     public void OnRunInfoButtonClick()
     {
+        Debug.Log("런 정보창 실행!");
+
         if (runInfoBox != null)
         {
             runInfoBox.SetActive(true);
 
             // 런 정보창을 인 게임 화면 위로 올림
-            runInfoBox.transform.DOLocalMoveY(1030f, 0.5f).SetEase(Ease.OutQuad); 
+            runInfoBox.transform.DOLocalMoveY(1030f, 1f)
+            .SetEase(Ease.OutBack); 
         }
     }
 
@@ -114,8 +129,12 @@ public class InfoAndOptions : MonoBehaviour
     {
         if (runInfoBox != null)
         {
+            Debug.Log("런 정보 창 종료!");
+            
             // 런 정보창을 인 게임 화면 밑으로 내림
-            runInfoBox.transform.DOLocalMoveY(0f, 0.5f).SetEase(Ease.OutQuad).OnComplete(() =>
+            runInfoBox.transform.DOLocalMoveY(0f, 1f)
+            .SetEase(Ease.InBack)
+            .OnComplete(() =>
             {
                 // 런 정보창 비활성화
                 runInfoBox.SetActive(false);

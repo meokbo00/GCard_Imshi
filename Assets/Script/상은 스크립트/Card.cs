@@ -26,6 +26,8 @@ public class Card : MonoBehaviour
     public bool isSelected = false;
     public bool isJoker = false;
 
+    SoundManager2 soundManager2;
+
     private SpriteRenderer spriteRenderer;
     public Vector3 originalPosition;
     private Vector3 hoverPosition;
@@ -69,6 +71,8 @@ public class Card : MonoBehaviour
     private const float DIRECTION_CHANGE_DELAY = 0.35f; // 방향 전환 딜레이
     private int lastMoveDirection = 0; // 마지막 이동 방향 (1: 오른쪽, -1: 왼쪽)
     private Vector3 lastMousePosition; // 이전 프레임의 마우스 위치
+    private Vector3 currentVelocity; // 현재 속도
+    public float maxSpeed = 20f; // 최대 이동 속도
 
     private TextMeshProUGUI pointText; // 포인트 텍스트 컴포넌트
 
@@ -77,6 +81,7 @@ public class Card : MonoBehaviour
         mainCamera = Camera.main;
         spriteRenderer = GetComponent<SpriteRenderer>();
         deckManager = FindObjectOfType<DeckManager>();
+        soundManager2 = FindObjectOfType<SoundManager2>();
         pointText = GetComponentInChildren<TextMeshProUGUI>(true);
         
         if (pointText != null)
@@ -116,32 +121,18 @@ public class Card : MonoBehaviour
 
     void OnMouseEnter()
     {
-        if (!isAnimating && !isSelected)
-        {
-            StopCurrentAnimation();
-            currentAnimation = StartCoroutine(HoverAnimation(true));
-        }
         isMouseOver = true; // 마우스가 카드 위에 있음을 표시
     }
 
     void OnMouseExit()
     {
-        if (!isMovingToOriginal && !isMovingToSelected)
-        {
-            StopCurrentAnimation();
-            currentAnimation = StartCoroutine(HoverAnimation(false));
-        }
-        else if (isSelected)
-        {
-            transform.localScale = originalScale;
-        }
         isMouseOver = false; // 마우스가 카드 위에 없음을 표시
     }
 
     void OnMouseDown()
     {
         if (!isMouseOver) return;
-        
+        soundManager2.PlayCardSound();
         isDragging = false;
         isDragStarted = false;
         mouseDownPosition = mainCamera.ScreenToWorldPoint(Input.mousePosition);
@@ -172,10 +163,25 @@ public class Card : MonoBehaviour
 
         if (isDragging)
         {
-            // 마우스 위치로 카드 이동 (X, Y 모두 이동)
+            // 마우스 위치로 카드 이동 (X, Y 모두 이동) - 속도 제한 적용
             Vector3 currentMousePosition = mainCamera.ScreenToWorldPoint(Input.mousePosition);
-            Vector3 newPos = new Vector3(currentMousePosition.x + dragOffset2D.x, currentMousePosition.y + dragOffset2D.y, transform.position.z);
-            transform.position = newPos;
+            Vector3 targetPosition = new Vector3(currentMousePosition.x + dragOffset2D.x, currentMousePosition.y + dragOffset2D.y, transform.position.z);
+            
+            // 현재 위치에서 목표 위치로의 방향 벡터 계산
+            Vector3 moveDirection = targetPosition - transform.position;
+            
+            // 이동 거리가 0이 아니면 속도 제한 적용
+            if (moveDirection.magnitude > 0.01f)
+            {
+                // 속도 제한 적용
+                if (moveDirection.magnitude > maxSpeed * Time.deltaTime)
+                {
+                    moveDirection = moveDirection.normalized * maxSpeed * Time.deltaTime;
+                }
+                
+                // 위치 업데이트
+                transform.position += moveDirection;
+            }
             
             // 드래그 중에는 다른 카드들의 위치를 재조정하지 않음
             // deckManager.RearrangeCards(this); // 이 줄을 주석 처리하여 다른 카드들의 위치가 움직이지 않도록 함
@@ -335,27 +341,6 @@ public class Card : MonoBehaviour
             StopCoroutine(currentAnimation);
             currentAnimation = null;
         }
-    }
-
-    private IEnumerator HoverAnimation(bool hover)
-    {
-        isAnimating = true;
-        float elapsedTime = 0;
-        Vector3 startScale = transform.localScale;
-        Vector3 targetScale = hover ? hoverScale : originalScale;
-        
-        while (elapsedTime < animationDuration)
-        {
-            elapsedTime += Time.deltaTime;
-            float t = elapsedTime / animationDuration;
-            t = Mathf.SmoothStep(0, 1, t);
-            transform.localScale = Vector3.Lerp(startScale, targetScale, t);
-            yield return null;
-        }
-
-        transform.localScale = targetScale;
-        isAnimating = false;
-        currentAnimation = null;
     }
 
     private IEnumerator MoveToPosition(Vector3 targetPosition)

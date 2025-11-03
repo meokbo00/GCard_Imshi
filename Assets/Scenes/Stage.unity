@@ -244,6 +244,7 @@ MonoBehaviour:
   startDelay: 2
   zoomDuration: 5
   index: 1
+  isexplainboxenable: 0
 --- !u!1 &151825352
 GameObject:
   m_ObjectHideFlags: 0
@@ -1107,6 +1108,134 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 317169516}
   m_CullTransparentMesh: 1
+--- !u!1 &322383794
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 322383796}
+  - component: {fileID: 322383795}
+  m_Layer: 0
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!82 &322383795
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 322383794}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: fd214ea47657b3247b9059bb8eec5bcf, type: 3}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 1
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!4 &322383796
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 322383794}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -1.4308782, y: -0.63454735, z: -2.1124516}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &399526538
 GameObject:
   m_ObjectHideFlags: 0
@@ -1343,6 +1472,8 @@ MonoBehaviour:
     money: 200
     ante: 1
     round: 1
+    bestscore: 0
+    moneyLimit: 0
 --- !u!4 &729768721
 Transform:
   m_ObjectHideFlags: 0
@@ -1902,7 +2033,7 @@ GameObject:
   - component: {fileID: 1246520791}
   - component: {fileID: 1246520793}
   m_Layer: 0
-  m_Name: json
+  m_Name: TextEffectjson
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1948,10 +2079,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23b5eba0356e2a04699e406c38eebd23, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  StageExplainBox: {fileID: 877613985}
   PlanetName: {fileID: 1715644517}
   PlanetExplain: {fileID: 1700531519}
-  charPerSecond: 0.05
-  startDelay: 8.5
+  Status: {fileID: 1906523151}
+  goalPoints: 0a000000140000001e00000020030000b004000040060000d0070000b80b0000a00f0000881300004c1d000010270000f82a000074400000f0550000204e00006c6b0000b8880000b888000014cd00007011010050c30000f8240100a0860100b0ad010088840200605b0300808b080040d10c00002e220000dd6d0080cba40000badb0000a3e1118074d21a0046c323
+  charPerSecond: 0.035
+  startDelay: 5.5
   betweenTextDelay: 0.3
 --- !u!1 &1347794860
 GameObject:
@@ -2390,7 +2524,7 @@ GameObject:
   - component: {fileID: 1697528657}
   - component: {fileID: 1697528656}
   m_Layer: 5
-  m_Name: bossrule
+  m_Name: Tmi
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3148,8 +3282,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uD578\uB4DC\uD50C\uB808\uC774\uB9C8\uB2E4 2\uC7A5\uC758 \uCE74\uB4DC\uB97C
-    \uBC84\uB9BD\uB2C8\uB2E4"
+  m_text: "1\uB77C\uC6B4\uB4DC : 450\n2\uB77C\uC6B4\uB4DC : 600\n3\uB77C\uC6B4\uB4DC
+    : 1,200"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: faefc704e2f741e479a2dd1f32dd2087, type: 2}
   m_sharedMaterial: {fileID: -4524481691833858355, guid: faefc704e2f741e479a2dd1f32dd2087, type: 2}
@@ -3176,8 +3310,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 23.4
-  m_fontSizeBase: 23.4
+  m_fontSize: 32.8
+  m_fontSizeBase: 32.8
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -3660,3 +3794,4 @@ SceneRoots:
   - {fileID: 179410894}
   - {fileID: 729768721}
   - {fileID: 1946236132}
+  - {fileID: 322383796}

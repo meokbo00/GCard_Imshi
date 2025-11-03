@@ -5,6 +5,11 @@ using System.Collections.Generic;
 
 public class DragItem : MonoBehaviour
 {
+    SoundManager2 soundManager2;
+    DeckManager deckManager;
+    SaveManager saveManager;
+    UseJokerSkill useJokerSkill;
+    JokerStat jokerStat;
     private Vector3 offset;
     private Camera mainCamera;
     private bool isDragging = false;
@@ -23,6 +28,7 @@ public class DragItem : MonoBehaviour
     public bool isInSellZone = false; // 판매 영역 안에 있는지 여부
     public string currentTag = "None";
     public bool isPurchased = false; // 구매 여부 추적
+    public int jokerCount = 0;
 
     [Header("Tween Settings")]
     [SerializeField] private float returnDuration = 0.3f; // 복귀 애니메이션 지속 시간
@@ -31,16 +37,24 @@ public class DragItem : MonoBehaviour
     
     private void Start()
     {
+        soundManager2 = FindObjectOfType<SoundManager2>();
+        deckManager = FindObjectOfType<DeckManager>();
+        saveManager = FindObjectOfType<SaveManager>();
+        useJokerSkill = FindObjectOfType<UseJokerSkill>();
+        jokerStat = FindObjectOfType<JokerStat>();
         mainCamera = Camera.main;
     }
 
     private void OnMouseDown()
     {
+        Debug.Log("드래그 시작");
         // ExplainBox 표시
         if (ExplainBox != null)
         {
+            Debug.Log("ExplainBox 널값 아님");
             ExplainBox.SetActive(true);
         }
+        soundManager2.PlayCardSound2();
 
         // JokerZone 레이어를 무시하도록 설정
         int jokerZoneLayer = LayerMask.NameToLayer("JokerZone");
@@ -223,6 +237,8 @@ public class DragItem : MonoBehaviour
             if (sellZone != null)
             {
                 sellZone.ProcessSell(gameObject);
+                useJokerSkill.jokerCount -= 1;
+                useJokerSkill.UpdateJokerCount();
                 // 판매 후 아이템은 삭제되므로 여기서 리턴
                 return;
             }
@@ -249,6 +265,119 @@ public class DragItem : MonoBehaviour
         {
             GameManager gameManager = FindObjectOfType<GameManager>();
             GameSaveData gameSaveData = FindObjectOfType<GameSaveData>();
+
+            // Voucher는 별도로 처리
+            if (gameObject.CompareTag("Voucher"))
+            {
+                VoucherStat voucherStat = GetComponent<VoucherStat>();
+                if (voucherStat != null && gameManager != null && gameManager.playerData.money >= voucherStat.price)
+                {
+                    soundManager2.PlayCoinSound();
+                    // 돈 차감 및 보상 지급 로직
+                    gameManager.BuyItem(voucherStat.price);
+                    if(voucherStat.voucherType == VoucherStat.VoucherType.HPVoucher)
+                    {
+                        gameManager.playerData.handcount += 1;
+                        gameManager.handCountText.text = gameManager.playerData.handcount.ToString();
+                        saveManager.Save(gameManager.playerData);
+                    }
+                    else if(voucherStat.voucherType == VoucherStat.VoucherType.TVoucher)
+                    {
+                        gameManager.playerData.trashcount += 1;
+                        gameManager.trashCountText.text = gameManager.playerData.trashcount.ToString();
+                        saveManager.Save(gameManager.playerData);
+                    }
+                    else if(voucherStat.voucherType == VoucherStat.VoucherType.MVoucher)
+                    {
+                        // 이자 한도 늘리기
+                        // 핸드플레이 카운트, 버리기 카운트가 있듯이 이자한도 텍스트도 겜창에 따로 하나 만들어 저장해줘야할것같음
+                        gameManager.playerData.moneyLimit += 5;
+                        saveManager.Save(gameManager.playerData);
+                        Debug.Log("이자 한도 : " + gameManager.playerData.moneyLimit);
+                    }
+                    
+                    // 구매 후 오브젝트 제거
+                    Destroy(gameObject);
+                }
+                return;
+            }
+            // ItemPack은 별도로 처리
+            else if (gameObject.CompareTag("ItemPack") || gameObject.CompareTag("MoneyPack"))
+            {
+                ItemPackStat stat = GetComponent<ItemPackStat>();
+                GenarateItem genarateItem = FindObjectOfType<GenarateItem>();
+                if (stat != null && gameManager != null && stat.price > 0 && gameManager.playerData.money - stat.price >= 0)
+                {
+                    soundManager2.PlayItemPackSound();
+                    // 돈 차감
+                    gameManager.BuyItem(stat.price);
+                    
+                    // 화면 중앙에서 오른쪽 아래로 1씩 이동한 좌표 계산
+                    Vector3 screenCenter = Camera.main.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, 10f));
+                    Vector3 targetPosition = new Vector3(screenCenter.x + 1f, screenCenter.y - 1f, screenCenter.z);
+                    
+                    // 구매 로그 메시지 출력
+                    Debug.Log("아이템팩 구매 성공! 화면 중앙에서 오른쪽 아래로 이동합니다.");
+                    ShopBoxUpAndDown shopBoxUpAndDown = FindObjectOfType<ShopBoxUpAndDown>();
+                    shopBoxUpAndDown.MoveShopBoxDown();
+                    
+                    // 부드럽게 지정된 위치로 이동한 후 효과 적용
+                    transform.DOMove(targetPosition, 0.5f).SetEase(Ease.OutBack).OnComplete(() => {
+                        // 초기 상태 저장
+                        Vector3 originalPosition = transform.position;
+                        
+                        // 2초 동안 지속되는 미세한 진동 효과
+                        float duration = 1.2f;  // 1.2초간 지속
+                        float intensity = 0.2f;  // 진동 강도 줄이기
+                        
+                        // 흔들림 효과 (지속적으로)
+                        transform.DOShakePosition(duration, new Vector3(intensity, intensity, 0), 20, 90, false, false)
+                            .SetEase(Ease.Linear);
+                        
+                        // 크기 증가 효과 (1에서 2로 2초 동안)
+                        transform.DOScale(1.6f, duration).SetEase(Ease.OutQuad)
+                            .OnComplete(() => {
+                                // 최종 위치로 정렬 (흔들림 보정)
+                                transform.position = originalPosition;
+                                
+                                // 상태 업데이트
+                                isPurchased = true;
+                                if (PriceTag != null) PriceTag.SetActive(false);
+                                enabled = false;
+                                ResetDragState();
+                                
+                                // 애니메이션 완료 후 오브젝트 제거
+                                Destroy(gameObject);
+                                if (gameObject.CompareTag("MoneyPack"))
+                                {
+                                    // MoneyPack의 경우 MoneyPack 전용 슬롯에 생성
+                                    genarateItem.GenerateRandomPrefabs(1, 4, gameObject, true);
+                                }
+                                else if (stat.itemPackType == ItemPackStat.ItemPackType.Joker2)
+                                {
+                                    // 현재 ItemPack 프리팹을 전달하여 해당 프리팹만 제거하도록 함
+                                    genarateItem.GenerateRandomPrefabs(1, 2, gameObject);
+                                }
+                                else if (stat.itemPackType == ItemPackStat.ItemPackType.Joker4)
+                                {
+                                    // 현재 ItemPack 프리팹을 전달하여 해당 프리팹만 제거하도록 함
+                                    genarateItem.GenerateRandomPrefabs(1, 4, gameObject);
+                                }
+                                else if (stat.itemPackType == ItemPackStat.ItemPackType.Money)
+                                {
+                                    // 현재 ItemPack 프리팹을 전달하여 해당 프리팹만 제거하도록 함
+                                    genarateItem.GenerateRandomPrefabs(2, 2, gameObject);
+                                }
+                            });
+                    });
+                }
+                else
+                {
+                    // 구매 실패 시 원래 위치로 돌아감
+                    ReturnToDragStartPosition();
+                }
+                return;
+            }
             
             // Joker, Taro, Planet 태그별로 처리
             if (gameObject.CompareTag("Joker") || gameObject.CompareTag("Taro") || gameObject.CompareTag("Planet"))
@@ -308,10 +437,32 @@ public class DragItem : MonoBehaviour
                             return;
                         }
                     }
+                    // 조커 존을 사용하는 경우 (Joker)
+                    else if (zoneTag == "JokerZone")
+                    {
+                        // JokerZone 내의 BuyJoker 태그를 가진 오브젝트 찾기
+                        jokerCount = 0;
+                        foreach (Transform child in targetZone.transform)
+                        {
+                            if (child.CompareTag("BuyJoker"))
+                            {
+                                jokerCount++;
+                            }
+                        }
+                        
+                        // 최대 5개까지만 허용
+                        if (jokerCount >= 5)
+                        {
+                            Debug.Log("조커는 최대 5개까지만 보유할 수 있습니다.");
+                            ReturnToDragStartPosition();
+                            ResetDragState();
+                            return;
+                        }
+                    }
                 }
                 
                 // 아이템 구매 처리
-                if (gameManager != null && price > 0 && gameManager.playerData.money - price >= 0)
+                if (gameManager != null && price >= 0 && gameManager.playerData.money - price >= 0)
                 {
                     gameManager.BuyItem(price);
                         
@@ -323,6 +474,7 @@ public class DragItem : MonoBehaviour
                     {
                         isDragging = false;
                         isDrag = false;
+                        soundManager2.PlayCashOutSound();
                         
                         // 아이템 존을 사용하는 경우 (Taro, Planet)
                         if (useItemZone)
@@ -476,6 +628,10 @@ public class DragItem : MonoBehaviour
                             {
                                 // 조커 아이템인 경우
                                 tagsToCheck = new string[] { "BuyJoker" };
+                                useJokerSkill.jokerCount += 1;
+                                useJokerSkill.UpdateJokerCount();
+                                GenarateItem genarateItem = FindObjectOfType<GenarateItem>();
+                                genarateItem.NoSkipSelectJoker();
                             }
                             else
                             {
@@ -507,6 +663,15 @@ public class DragItem : MonoBehaviour
                         itemData.SaveObjectData(gameObject.name);
                         isPurchased = true;
                         if (PriceTag != null) PriceTag.SetActive(false);
+
+                        // ShopBox가 아래로 내려가있는 상태라면 ShopBox를 위로 올립니다.
+                        ShopBoxUpAndDown shopBoxUpAndDown = FindObjectOfType<ShopBoxUpAndDown>();
+                        if (shopBoxUpAndDown.isShopBoxDown)
+                        {
+                            shopBoxUpAndDown.MoveShopBoxUp();
+                            shopBoxUpAndDown.ItemSelectZoneDown();
+                        }
+
                         
                         enabled = false;
                         ResetDragState();

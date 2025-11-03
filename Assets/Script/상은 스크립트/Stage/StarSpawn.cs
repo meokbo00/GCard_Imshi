@@ -17,11 +17,6 @@ public class StarSpawn : MonoBehaviour
     [SerializeField] private float minSpawnDelay = 0.1f;   // 최소 생성 간격
     [SerializeField] private float maxSpawnDelay = 0.3f;   // 최대 생성 간격
     
-    private const float MIN_X = -950f;
-    private const float MAX_X = 950f;
-    private const float MIN_Y = -530f;
-    private const float MAX_Y = 530f;
-    
     private List<GameObject> activeStars = new List<GameObject>();
     private Queue<GameObject> starPool = new Queue<GameObject>();
     private Transform starsParent;  // 생성된 별들을 정리할 부모 오브젝트

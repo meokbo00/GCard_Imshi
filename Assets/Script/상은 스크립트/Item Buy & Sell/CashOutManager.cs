@@ -8,11 +8,13 @@ using TMPro;
 // 캐시 아웃창이 생성되고 나서 얻을 재화의 경로와 재화의 양을 보여주는 스크립트
 public class CashOutManager : MonoBehaviour
 {
+    SoundManager2 soundManager2;
     public GameObject CashOutBox;
     public GameObject CashOutBtn;
     public GameObject BG;
     public GameObject DollarPrefab;
     public GameObject MinusPrefab;
+    public TextMeshProUGUI MoneyLimitTxt;
 
     [Header("캐시아웃 버튼 텍스트에 출력될 총 돈의 값")]
     public TextMeshProUGUI BtnMoneyTxt;
@@ -34,8 +36,8 @@ public class CashOutManager : MonoBehaviour
     GameManager gameManager;
 
     [Header("이자 관련 설정")]
-    [Tooltip("이자 한계값 (기본값: 5, money 25 이상일 때 최대치)")]
-    public int interestMaxLimit = 5;
+    //[Tooltip("이자 한계값 (기본값: 5, money 25 이상일 때 최대치)")]
+    //public int interestMaxLimit = 5;
     [Tooltip("이자 증가 단위 (money 5당 1 증가)")]
     public int interestIncrementUnit = 5;
     
@@ -51,9 +53,10 @@ public class CashOutManager : MonoBehaviour
 
     void Start()
     {
-        gameManager = FindObjectOfType<GameManager>();
         CashOutBtn.SetActive(false);
         gameSaveData = FindAnyObjectByType<GameSaveData>();
+        gameManager = FindObjectOfType<GameManager>();
+        soundManager2 = FindObjectOfType<SoundManager2>();
     }
 
     // 돈 아이콘을 생성하는 코루틴
@@ -94,6 +97,7 @@ public class CashOutManager : MonoBehaviour
                 
                 // 프리팹 생성 및 초기 설정
                 var instance = Instantiate(DollarPrefab, parent.transform, false);
+                soundManager2.PlayCoinSound();
                 instance.transform.localPosition = position;
                 
                 // 원래 스케일 저장
@@ -233,6 +237,7 @@ public class CashOutManager : MonoBehaviour
             ShowTotalMoney();
             StartCoroutine(DelayedStartSequence());
         }
+        MoneyLimitTxt.text = "$5당 이자 $1 (최대 " + gameManager.playerData.moneyLimit + ")";
     }
     
     public void ShowTotalMoney()
@@ -240,7 +245,7 @@ public class CashOutManager : MonoBehaviour
         // money를 단위로 나누어 interest 계산 (5당 1 증가, 최대 interestMaxLimit)
         interestmoney = Mathf.Min(
             gameManager.playerData.money / interestIncrementUnit,  // money를 단위로 나눈 값
-            interestMaxLimit                            // 최대값 제한
+            gameManager.playerData.moneyLimit                            // 최대값 제한
         );
         
         // 0 이하인 경우 0으로 설정 (옵션: 필요에 따라 제거 가능)

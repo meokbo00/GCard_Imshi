@@ -14,7 +14,7 @@ public class CameraMoving : MonoBehaviour
     [SerializeField] private float zoomDuration = 5f;
     [Header("플레이할 행성 차례")]
     public int index = 0;
-
+    public bool isexplainboxenable = false;
 
 
     private Camera mainCamera;
@@ -262,7 +262,18 @@ public class CameraMoving : MonoBehaviour
         
         // 이동이 완료된 후 콜백 실행
         onComplete?.Invoke();
-        PlanetExplainBox.SetActive(true);
+            // 3초 대기 후 PlanetExplainBox 활성화 (DOTween 사용)
+    DG.Tweening.DOVirtual.DelayedCall(3f, () => {
+        if (PlanetExplainBox != null)
+        {
+            PlanetExplainBox.SetActive(true);
+            isexplainboxenable = true;
+            Debug.Log("3초 후 PlanetExplainBox 활성화됨");
+        }
+    });
+    
+    // 코루틴 종료
+    yield break;
     }
     
     private void OnDestroy()

@@ -14,10 +14,26 @@ public class GenarateItem : MonoBehaviour
     public GameObject ItemPackSlot2;
     public GameObject VoucherSlot1;
 
+    [Header("아이템팩 전용 슬롯")]
+    public GameObject SelectSlot1;
+    public GameObject SelectSlot2;
+    public GameObject SelectSlot3;
+    public GameObject SelectSlot4;
+    public GameObject SkipBtn;
+
+    [Header("머니팩 전용 슬롯")]
+    public GameObject MoneyPackSlot1;
+    public GameObject MoneyPackSlot2;
+    public GameObject MoneyPackSlot3;
+    public GameObject MoneyPackSlot4;
+
     [Header("프리팹 배열")]
     public GameObject[] ZokerPrefabs;
     public GameObject[] ItemPackPrefabs;
     public GameObject[] VoucherPrefabs;
+    public GameObject[] MoneyPrefabs;
+    public GameObject[] ItemPackJoker;
+    public GameObject[] ItemPackMoney;
     
     // 더 이상 사용하지 않는 프리팹 배열들
     private GameObject[] TaroPrefabs = new GameObject[0];
@@ -33,6 +49,136 @@ public class GenarateItem : MonoBehaviour
     private void Start()
     {
         gameManager = FindAnyObjectByType<GameManager>();
+    }
+
+    // 타입에 따라 랜덤한 프리팹을 지정된 개수의 슬롯에 생성하는 메서드
+    // type: 1=ZokerPrefabs, 2=MoneyPrefabs
+    // slotCount: 사용할 슬롯의 개수 (1~4)
+    // itemPackToRemove: 제거할 특정 ItemPack 프리팹 (선택사항)
+    // isMoneyPack: 머니팩 여부 (true면 MoneyPack 전용 슬롯 사용)
+    public void GenerateRandomPrefabs(int type, int slotCount, GameObject itemPackToRemove = null, bool isMoneyPack = false)
+    {
+        // 특정 ItemPack 프리팹이 지정된 경우 해당 프리팹만 제거
+        if (itemPackToRemove != null)
+        {
+            if (instantiatedPrefabs.Contains(itemPackToRemove))
+            {
+                instantiatedPrefabs.Remove(itemPackToRemove);
+                if (itemPackToRemove != null)
+                    Destroy(itemPackToRemove);
+            }
+        }
+        else
+        {
+            // 기존 로직: 모든 프리팹 제거
+            foreach (var prefab in instantiatedPrefabs)
+            {
+                if (prefab != null)
+                    Destroy(prefab);
+            }
+            instantiatedPrefabs.Clear();
+        }
+
+        // 타입과 isMoneyPack에 따라 사용할 프리팹 배열 선택
+        GameObject[] prefabsToUse;
+        if (isMoneyPack)
+        {
+            prefabsToUse = type == 1 ? ItemPackMoney : MoneyPrefabs;
+        }
+        else
+        {
+            prefabsToUse = type == 1 ? ItemPackJoker : MoneyPrefabs;
+        }
+        if (prefabsToUse == null || prefabsToUse.Length == 0)
+        {
+            Debug.LogError("No prefabs available for the specified type: " + type);
+            return;
+        }
+
+        // 슬롯 개수 유효성 검사
+        slotCount = Mathf.Clamp(slotCount, 1, 4);
+        
+        // 사용할 슬롯 배열 생성
+        GameObject[] slots;
+        List<int> slotIndices = new List<int>();
+        
+        // MoneyPack인 경우 MoneyPack 전용 슬롯 사용
+        if (isMoneyPack)
+        {
+            slots = new GameObject[4] { MoneyPackSlot1, MoneyPackSlot2, MoneyPackSlot3, MoneyPackSlot4 };
+            // 랜덤하게 슬롯 선택 (중복 없이)
+            slotIndices = new List<int> { 0, 1, 2, 3 };
+            for (int i = 0; i < 4 - slotCount; i++)
+            {
+                int removeIndex = Random.Range(0, slotIndices.Count);
+                slotIndices.RemoveAt(removeIndex);
+            }
+        }
+        // slotCount가 2인 경우 SelectSlot2와 SelectSlot3에만 생성
+        else if (slotCount == 2)
+        {
+            SkipBtn.SetActive(true);
+            slots = new GameObject[2] { SelectSlot2, SelectSlot3 };
+            slotIndices.Add(0); // SelectSlot2
+            slotIndices.Add(1); // SelectSlot3
+        }
+        else
+        {
+            SkipBtn.SetActive(true);
+            // 그 외의 경우 기존 로직 유지
+            slots = new GameObject[4] { SelectSlot1, SelectSlot2, SelectSlot3, SelectSlot4 };
+            // 랜덤하게 슬롯 선택 (중복 없이)
+            slotIndices = new List<int> { 0, 1, 2, 3 };
+            for (int i = 0; i < 4 - slotCount; i++)
+            {
+                int removeIndex = Random.Range(0, slotIndices.Count);
+                slotIndices.RemoveAt(removeIndex);
+            }
+        }
+
+        // 선택된 슬롯에 프리팹 생성
+        foreach (int slotIndex in slotIndices)
+        {
+            if (slots[slotIndex] != null)
+            {
+                // 랜덤한 프리팹 선택 (MoneyPack의 경우 가중치 적용)
+                GameObject randomPrefab;
+                if (isMoneyPack && type == 1) // MoneyPack이고 ItemPackMoney 배열을 사용하는 경우
+                {
+                    // 1~100 사이의 랜덤 값 생성
+                    int randomValue = Random.Range(1, 101);
+                    int selectedIndex;
+                    
+                    // 지정된 범위에 따라 인덱스 결정
+                    if (randomValue <= 45) // 45% 확률 (1-45)
+                        selectedIndex = 0;
+                    else if (randomValue <= 65) // 25% 확률 (46-70)
+                        selectedIndex = 1;
+                    else if (randomValue <= 85) // 15% 확률 (71-85)
+                        selectedIndex = 2;
+                    else if (randomValue <= 92) // 9% 확률 (86-94)
+                        selectedIndex = 3;
+                    else // 6% 확률 (95-100)
+                        selectedIndex = 4;
+                    
+                    // 선택된 인덱스가 배열 범위를 벗어나지 않도록 조정
+                    selectedIndex = Mathf.Clamp(selectedIndex, 0, prefabsToUse.Length - 1);
+                    randomPrefab = prefabsToUse[selectedIndex];
+                }
+                else
+                {
+                    // 기존 랜덤 선택 로직
+                    randomPrefab = prefabsToUse[Random.Range(0, prefabsToUse.Length)];
+                }
+                
+                if (randomPrefab != null)
+                {
+                    GameObject newPrefab = Instantiate(randomPrefab, slots[slotIndex].transform);
+                    newPrefab.transform.localPosition = Vector3.zero;
+                    instantiatedPrefabs.Add(newPrefab);
+                }
+            }
+        }
     }
 
     private void OnEnable()
@@ -59,7 +205,7 @@ public class GenarateItem : MonoBehaviour
         
         // 항상 조커 프리팹 사용
         GameObject[] targetPrefabs = ZokerPrefabs;
-        
+
         if (targetPrefabs == null || targetPrefabs.Length == 0)
             return null;
         
@@ -168,6 +314,12 @@ public class GenarateItem : MonoBehaviour
                 Vector3 localPos = instance.transform.localPosition;
                 localPos.z = -1f;
                 instance.transform.localPosition = localPos;
+                // sortingOrder 설정
+                SpriteRenderer renderer = instance.GetComponent<SpriteRenderer>();
+                if (renderer != null)
+                {
+                    renderer.sortingOrder = -7;
+                }
                 instantiatedPrefabs.Add(instance);
             }
         }
@@ -183,6 +335,12 @@ public class GenarateItem : MonoBehaviour
                 Vector3 localPos = instance.transform.localPosition;
                 localPos.z = -1f;
                 instance.transform.localPosition = localPos;
+                // sortingOrder 설정
+                SpriteRenderer renderer = instance.GetComponent<SpriteRenderer>();
+                if (renderer != null)
+                {
+                    renderer.sortingOrder = -7;
+                }
                 instantiatedPrefabs.Add(instance);
             }
         }
@@ -198,13 +356,19 @@ public class GenarateItem : MonoBehaviour
                 Vector3 localPos = instance.transform.localPosition;
                 localPos.z = -1f;
                 instance.transform.localPosition = localPos;
+                // sortingOrder 설정
+                SpriteRenderer renderer = instance.GetComponent<SpriteRenderer>();
+                if (renderer != null)
+                {
+                    renderer.sortingOrder = -7;
+                }
                 instantiatedPrefabs.Add(instance);
             }
         }
         
-        if (ItemPackSlot2 != null && ItemPackPrefabs.Length > 0)
+        if (ItemPackSlot2 != null && MoneyPrefabs.Length > 0)
         {
-            GameObject prefabToSpawn = GetRandomPrefab(ItemPackPrefabs);
+            GameObject prefabToSpawn = GetRandomPrefab(MoneyPrefabs);
             if (prefabToSpawn != null)
             {
                 GameObject instance = Instantiate(prefabToSpawn, ItemPackSlot2.transform.position, Quaternion.identity, ItemPackSlot2.transform);
@@ -212,6 +376,12 @@ public class GenarateItem : MonoBehaviour
                 Vector3 localPos = instance.transform.localPosition;
                 localPos.z = -1f;
                 instance.transform.localPosition = localPos;
+                // sortingOrder 설정
+                SpriteRenderer renderer = instance.GetComponent<SpriteRenderer>();
+                if (renderer != null)
+                {
+                    renderer.sortingOrder = -7;
+                }
                 instantiatedPrefabs.Add(instance);
             }
         }
@@ -227,6 +397,12 @@ public class GenarateItem : MonoBehaviour
                 Vector3 localPos = instance.transform.localPosition;
                 localPos.z = -1f;
                 instance.transform.localPosition = localPos;
+                // sortingOrder 설정
+                SpriteRenderer renderer = instance.GetComponent<SpriteRenderer>();
+                if (renderer != null)
+                {
+                    renderer.sortingOrder = -7;
+                }
                 instantiatedPrefabs.Add(instance);
             }
         }
@@ -248,6 +424,21 @@ public class GenarateItem : MonoBehaviour
     private void UpdateUI()
     {
         RerollCostText.text = "$" + RerollCost.ToString("N0");
+    }
+
+    public void OnSkipBtnClick()
+    {
+        ShopBoxUpAndDown shopBoxUpAndDown = FindObjectOfType<ShopBoxUpAndDown>();
+        if (shopBoxUpAndDown.isShopBoxDown)
+        {
+            shopBoxUpAndDown.MoveShopBoxUp();
+            shopBoxUpAndDown.ItemSelectZoneDown();
+        }
+        SkipBtn.SetActive(false);
+    }
+    public void NoSkipSelectJoker()
+    {
+        SkipBtn.SetActive(false);
     }
 
     public void OnNextBtnClick()
@@ -327,6 +518,11 @@ public class GenarateItem : MonoBehaviour
                     Vector3 localPos = instance.transform.localPosition;
                     localPos.z = -1f;
                     instance.transform.localPosition = localPos;
+                    SpriteRenderer renderer = instance.GetComponent<SpriteRenderer>();
+                    if (renderer != null)
+                    {
+                        renderer.sortingOrder = -7;
+                    }
                     instantiatedPrefabs.Add(instance);
                     
                     // 두 번째 슬롯을 위해 첫 번째 슬롯의 프리팹 저장
@@ -376,6 +572,11 @@ public class GenarateItem : MonoBehaviour
                     Vector3 localPos = instance.transform.localPosition;
                     localPos.z = -1f;
                     instance.transform.localPosition = localPos;
+                    SpriteRenderer renderer = instance.GetComponent<SpriteRenderer>();
+                    if (renderer != null)
+                    {
+                        renderer.sortingOrder = -7;
+                    }
                     instantiatedPrefabs.Add(instance);
                 }
             }

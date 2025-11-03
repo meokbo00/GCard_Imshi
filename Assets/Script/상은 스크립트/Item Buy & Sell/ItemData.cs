@@ -23,9 +23,11 @@ public class ItemData : MonoBehaviour
     private BuyJokersData buyJokersData = new BuyJokersData();
     private string savePath = "./Saves/JokerZone";
     private const string PREFAB_PATH_PREFIX = "Prefabs/ShopItem/Joker/";
+    JokerStat jokerStat;
     
     private void Awake()
     {
+        jokerStat = FindObjectOfType<JokerStat>();
         // 저장 디렉토리가 없으면 생성
         try
         {
